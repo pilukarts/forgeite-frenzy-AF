@@ -58,7 +58,7 @@ const UpgradesPage: React.FC = () => {
                     <CardFooter className="p-3 sm:p-4 pt-0"> {/* Adjusted padding */}
                       <Button 
                         onClick={() => purchaseUpgrade(upgrade.id)} 
-                        disabled={playerProfile.points < cost || Boolean(upgrade.maxLevel && level !== undefined && level >= upgrade.maxLevel)}
+                        disabled={playerProfile.points < cost || (upgrade.maxLevel && level >= upgrade.maxLevel)}
                         className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-base py-2" /* Adjusted text size, padding */
                         size="default"
                       >
