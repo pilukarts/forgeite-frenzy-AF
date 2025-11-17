@@ -1,10 +1,8 @@
-
-"use client";
-import React, { useState } from 'react';
+import React from 'react';
+import { useGame } from '@/contexts/GameContext';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { useGame } from '@/contexts/GameContext';
-import { Skeleton } from '@/components/ui/skeleton';
+import { motion } from 'framer-motion';
 
 interface CommanderPortraitProps {
   onTap: () => void;
@@ -13,89 +11,51 @@ interface CommanderPortraitProps {
 
 const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap }) => {
   const { playerProfile } = useGame();
-  const [isTapped, setIsTapped] = useState(false);
 
-  const baseImageUrl = playerProfile?.avatarUrl;
-
-  if (!playerProfile || !baseImageUrl) {
-    return (
-      <div className="relative w-full h-full flex items-center justify-center">
-        <Skeleton className="w-full h-full" />
-      </div>
-    );
+  if (!playerProfile) {
+    return null; // Or a loading skeleton
   }
-  
-  const imageUrl = `${baseImageUrl}?t=${new Date().getTime()}`;
-  
-  const altText = `Commander ${playerProfile.name}`;
-  const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander full body" : "female commander full body";
 
-  const handleInteraction = (isLogoTap: boolean) => {
-    if (isLogoTap) {
-      onLogoTap();
-    } else {
-      onTap();
-    }
-    setIsTapped(true);
-    setTimeout(() => setIsTapped(false), 200);
-  };
-  
-  const logoHitbox = playerProfile.commanderSex === 'female'
-    ? { top: '38%', left: '41%', width: '18%', height: '10%' }
-    : { top: '38%', left: '41%', width: '18%', height: '10%' }; 
-    
+  const commanderImage = playerProfile.commanderSex === 'male' 
+    ? '/images/global/commander-man-full.png' 
+    : '/images/global/commander-woman-full.png';
+
+  const dataAiHint = playerProfile.commanderSex === 'male' ? "male commander" : "female commander";
+
+  const currentTierColor = playerProfile.currentTierColor || '45 100% 50%';
+
   const dynamicGlowStyle = {
-    '--dynamic-commander-glow': playerProfile.currentTierColor,
+    '--dynamic-commander-glow': currentTierColor,
   } as React.CSSProperties;
-
 
   return (
     <div 
-      onClick={() => handleInteraction(false)} 
-      className={cn(
-        "relative focus:outline-none transition-transform duration-100 cursor-pointer w-full h-full pointer-events-auto",
-        isTapped && "scale-105"
-      )}
-      aria-label="Tap Commander"
+      style={dynamicGlowStyle}
+      className="relative w-full h-full cursor-pointer group"
+      onClick={onTap}
     >
-        {/* Container for the image to ensure proper layout and stacking context */}
-        <div
-            className="w-full h-full relative group z-10"
-        >
-            <Image
-            src={imageUrl}
-            alt={altText}
-            data-ai-hint={dataAiHint}
-            fill
-            style={{ objectFit: 'contain', objectPosition: 'bottom' }}
-            className={cn(
-              "transition-all duration-200 commander-aura-glow" 
-            )}
-            priority
-            key={playerProfile.avatarUrl}
-            />
-        </div>
+      <motion.div 
+        className="absolute inset-0 commander-aura-glow"
+        style={{
+            borderRadius: '50%',
+        }}
+      />
 
-        {/* Invisible button for the AF logo hotspot */}
-        <button
-            onClick={(e) => {
-                e.stopPropagation(); 
-                handleInteraction(true);
-            }}
-            onTouchStart={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handleInteraction(true);
-            }}
-            aria-label="Tap AF Logo for Bonus"
-            className="absolute z-20 rounded-full"
-            style={{
-            top: logoHitbox.top,
-            left: logoHitbox.left,
-            width: logoHitbox.width,
-            height: logoHitbox.height,
-            }}
+      <motion.div 
+        className="relative w-full h-full rounded-full overflow-hidden"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <Image
+          src={commanderImage}
+          alt="Commander Portrait"
+          data-ai-hint={dataAiHint}
+          fill
+          style={{ objectFit: 'cover' }}
+          className="group-hover:scale-110 transition-transform duration-300"
+          priority
         />
+      </motion.div>
     </div>
   );
 };
