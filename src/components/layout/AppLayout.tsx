@@ -15,6 +15,7 @@ import PlayerSetup from '../player/PlayerSetup';
 import PreIntroScreen from '../intro/PreIntroScreen';
 import SidebarNav from '../navigation/SidebarNav';
 import { Card, CardContent } from '@/components/ui/card';
+import LiveDashboard from '@/components/game/LiveDashboard';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -213,7 +214,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           </main>
           
           <CoreDisplay />
-          
+          <LiveDashboard />
           <BottomNavBar />
         </div>
       </div>

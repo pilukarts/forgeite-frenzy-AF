@@ -3,8 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import CommanderSelection from '@/components/game/CommanderSelection';
-import { AVAILABLE_COMMANDERS } from '@/components/game/CommanderSelection';
+import CommanderSelection from '@/components/game/commanderSelection';
+import { AVAILABLE_COMMANDERS } from '@/components/game/commanderSelection';
 
 interface PlayerSetupProps {
   onPlayerReady: (playerData: PlayerData) => void;
