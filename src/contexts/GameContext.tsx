@@ -18,8 +18,22 @@ import { getCoreProgressUpdate } from '@/ai/flows/core-progress-updates';
 import type { CoreAskInput, CoreAskOutput } from '@/ai/flows/core-ask-question';
 import type { CoreMessage } from '@/lib/types';
 import { Buffer } from 'buffer';
-import { v4 as uuidv4 } from 'uuid';
 import WebApp from '@twa-dev/sdk';
+
+const uuidv4 = (): string => {
+  // Browser or modern Node runtime
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+    // @ts-ignore - some TS lib targets may not include randomUUID in the type definitions
+    return crypto.randomUUID();
+  }
+
+  // Fallback RFC4122 v4 implementation (pure JS)
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
 
 interface GameContextType {
   playerProfile: PlayerProfile | null;
