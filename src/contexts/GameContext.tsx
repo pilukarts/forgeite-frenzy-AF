@@ -1,3 +1,4 @@
+"use client";
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { PlayerData } from '@/components/player/PlayerSetup';
 interface GameState {
@@ -116,18 +117,12 @@ return {
 player: action.payload,
 isGameActive: true,
 points: action.payload.points,
-totalPoints: action.payload.totalPoints
 };
 case 'ADD_POINTS':
 const newPoints = state.points + action.payload;
-const newTotalPoints = state.player ? state.player.totalPoints + action.payload : action.payload;
 return {
 ...state,
 points: newPoints,
-player: state.player ? {
-...state.player,
-totalPoints: newTotalPoints
-} : null
 };
 case 'TAP_COMMANDER':
 const basePoints = 1;
@@ -254,3 +249,4 @@ throw new Error('useGame must be used within a GameProvider');
 }
 return context;
 }
+    
