@@ -1,162 +1,224 @@
+
+"use client";
+
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import CommanderSelection from '@/components/game/CommanderSelection';
-import { AVAILABLE_COMMANDERS } from '@/components/game/CommanderSelection';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Check, ChevronRight, User, Flag, Image as ImageIcon } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { countries } from '@/lib/countries';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import Image from 'next/image';
+import { cn } from '@/lib/utils';
+import { SELECTABLE_AVATARS } from '@/lib/gameData';
+import { useToast } from '@/hooks/use-toast';
+import PreIntroScreen from '@/components/intro/PreIntroScreen';
 
-interface PlayerSetupProps {
-  onPlayerReady: (playerData: PlayerData) => void;
-    className?: string;
+type SetupStep = 'intro' | 'name' | 'appearance' | 'country' | 'confirm';
+
+export default function PlayerSetup() {
+  const { completeInitialSetup, isPreIntroDone, completePreIntro } = useGame();
+  const { toast } = useToast();
+
+  const [step, setStep] = useState<SetupStep>('intro');
+  const [name, setName] = useState('');
+  const [commanderSex, setCommanderSex] = useState<'male' | 'female'>('male');
+  const [country, setCountry] = useState('');
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
+  const handleNameSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (name.trim().length >= 2) {
+      setStep('appearance');
+    }
+  };
+
+  const handleAppearanceSelect = (sex: 'male' | 'female') => {
+    setCommanderSex(sex);
+    setStep('country');
+  };
+
+  const handleCountrySelect = (currentValue: string) => {
+    setCountry(currentValue === country ? "" : currentValue);
+    setPopoverOpen(false);
+    setStep('confirm');
+  };
+  
+  const handleConfirm = () => {
+    if (!name.trim() || !commanderSex || !country) {
+      toast({
+        title: "Incomplete Profile",
+        description: "Please make sure you have entered a name, chosen an appearance, and selected a country.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const selectedAvatar = SELECTABLE_AVATARS.find(avatar => avatar.sex === commanderSex);
+    
+    if (!selectedAvatar) {
+        toast({
+            title: "Avatar Error",
+            description: "Could not find the selected avatar configuration. Please try again.",
+            variant: "destructive",
+        });
+        return;
     }
 
-    export interface PlayerData {
-      name: string;
-        commanderId: string;
-          level: number;
-            rank: string;
-              experience: number;
-                experienceToNext: number;
-                  points: number;
-                    totalPoints: number;
-                      achievements: string[];
-                      }
+    completeInitialSetup(name, commanderSex, country, selectedAvatar.portraitUrl, selectedAvatar.fullBodyUrl);
+  };
+  
+  const getStepContent = () => {
+    switch (step) {
+      case 'intro':
+          return <PreIntroScreen onCompletion={() => setStep('name')} />;
+      case 'name':
+        return (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <CardHeader>
+              <CardTitle className="flex items-center"><User className="mr-2" /> Callsign</CardTitle>
+              <CardDescription>Enter your commander callsign.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleNameSubmit}>
+                <Input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="e.g., Commander Nova"
+                  className="text-center text-lg h-12 mb-4"
+                  autoFocus
+                />
+                <Button type="submit" className="w-full" disabled={name.trim().length < 2}>
+                  Confirm Callsign <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              </form>
+            </CardContent>
+          </motion.div>
+        );
 
-                      const INITIAL_RANKS = [
-                        { name: 'Recluta', minLevel: 1, color: 'text-gray-400' },
-                          { name: 'Soldado', minLevel: 5, color: 'text-green-400' },
-                            { name: 'Sargento', minLevel: 10, color: 'text-blue-400' },
-                              { name: 'Teniente', minLevel: 15, color: 'text-purple-400' },
-                                { name: 'Capitán', minLevel: 25, color: 'text-yellow-400' },
-                                  { name: 'Comandante', minLevel: 35, color: 'text-orange-400' },
-                                    { name: 'General', minLevel: 50, color: 'text-red-400' },
-                                      { name: 'Maestro', minLevel: 75, color: 'text-pink-400' }
-                                      ];
+      case 'appearance':
+        return (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <CardHeader>
+              <CardTitle className="flex items-center"><ImageIcon className="mr-2" /> Appearance</CardTitle>
+              <CardDescription>Select your commander's appearance.</CardDescription>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 gap-4">
+              {SELECTABLE_AVATARS.map(avatar => (
+                <div key={avatar.sex} onClick={() => handleAppearanceSelect(avatar.sex)} className="cursor-pointer">
+                  <Image
+                    src={avatar.portraitUrl}
+                    alt={`${avatar.sex} commander`}
+                    data-ai-hint={avatar.hint}
+                    width={200}
+                    height={200}
+                    className="rounded-lg border-4 border-transparent hover:border-primary transition-all"
+                  />
+                   <p className="text-center mt-2 font-semibold capitalize">{avatar.sex}</p>
+                </div>
+              ))}
+            </CardContent>
+          </motion.div>
+        );
 
-                                      export default function PlayerSetup({ onPlayerReady, className = "" }: PlayerSetupProps) {
-                                        const [step, setStep] = useState<'name' | 'commander'>('name');
-                                          const [playerName, setPlayerName] = useState('');
-                                            const [selectedCommander, setSelectedCommander] = useState<string>('');
-                                              const [isLoading, setIsLoading] = useState(false);
+      case 'country':
+        return (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <CardHeader>
+              <CardTitle className="flex items-center"><Flag className="mr-2" /> Home Country</CardTitle>
+              <CardDescription>Select your country of origin.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    className="w-full justify-between h-12 text-lg"
+                  >
+                    {country ? countries.find((c) => c.code === country)?.name : "Select country..."}
+                    <ChevronRight className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[300px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Search country..." />
+                    <CommandEmpty>No country found.</CommandEmpty>
+                    <CommandList>
+                        <CommandGroup>
+                        {countries.map((c) => (
+                            <CommandItem
+                            key={c.code}
+                            value={c.code}
+                            onSelect={handleCountrySelect}
+                            >
+                            <Check
+                                className={cn(
+                                "mr-2 h-4 w-4",
+                                country === c.code ? "opacity-100" : "opacity-0"
+                                )}
+                            />
+                            {c.name}
+                            </CommandItem>
+                        ))}
+                        </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </CardContent>
+          </motion.div>
+        );
 
-                                                const handleNameSubmit = () => {
-                                                    if (playerName.trim().length >= 2) {
-                                                          setStep('commander');
-                                                              }
-                                                                };
+      case 'confirm':
+        return (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <CardHeader>
+              <CardTitle>Confirm Your Profile</CardTitle>
+              <CardDescription>Review your details before deployment.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Callsign:</span>
+                <span className="font-bold">{name}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Appearance:</span>
+                <span className="font-bold capitalize">{commanderSex}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Country:</span>
+                <span className="font-bold">{countries.find(c => c.code === country)?.name}</span>
+              </div>
+              <Button onClick={handleConfirm} className="w-full mt-4">
+                Deploy Commander
+              </Button>
+            </CardContent>
+          </motion.div>
+        );
+      
+      default: return null;
+    }
+  };
 
-                                                                  const handleCommanderSelect = async (commanderId: string) => {
-                                                                      setSelectedCommander(commanderId);
-                                                                          
-                                                                              // Simular carga
-                                                                                  setIsLoading(true);
-                                                                                      await new Promise(resolve => setTimeout(resolve, 1000));
-                                                                                          
-                                                                                              // Crear datos iniciales del jugador
-                                                                                                  const playerData: PlayerData = {
-                                                                                                        name: playerName.trim(),
-                                                                                                              commanderId,
-                                                                                                                    level: 1,
-                                                                                                                          rank: INITIAL_RANKS[0].name,
-                                                                                                                                experience: 0,
-                                                                                                                                      experienceToNext: 100,
-                                                                                                                                            points: 0,
-                                                                                                                                                  totalPoints: 0,
-                                                                                                                                                        achievements: ['Bienvenido al Cyber Concord']
-                                                                                                                                                            };
-                                                                                                                                                                
-                                                                                                                                                                    onPlayerReady(playerData);
-                                                                                                                                                                      };
-
-                                                                                                                                                                        const handleNameKeyPress = (e: React.KeyboardEvent) => {
-                                                                                                                                                                            if (e.key === 'Enter') {
-                                                                                                                                                                                  handleNameSubmit();
-                                                                                                                                                                                      }
-                                                                                                                                                                                        };
-
-                                                                                                                                                                                          if (step === 'name') {
-                                                                                                                                                                                              return (
-                                                                                                                                                                                                    <div className={`max-w-md mx-auto ${className}`}>
-                                                                                                                                                                                                            <Card className="bg-gradient-to-br from-blue-900 to-purple-900 border-blue-600">
-                                                                                                                                                                                                                      <CardHeader className="text-center space-y-2">
-                                                                                                                                                                                                                                  <CardTitle className="text-2xl text-white">Forgenite Frenzy</CardTitle>
-                                                                                                                                                                                                                                              <p className="text-blue-200">Ingresa tu nombre de comandante</p>
-                                                                                                                                                                                                                                                        </CardHeader>
-                                                                                                                                                                                                                                                                  <CardContent className="space-y-6">
-                                                                                                                                                                                                                                                                              <div className="space-y-2">
-                                                                                                                                                                                                                                                                                            <Label htmlFor="playerName" className="text-blue-200">
-                                                                                                                                                                                                                                                                                                            Nombre del Comandante
-                                                                                                                                                                                                                                                                                                                          </Label>
-                                                                                                                                                                                                                                                                                                                                        <Input
-                                                                                                                                                                                                                                                                                                                                                        id="playerName"
-                                                                                                                                                                                                                                                                                                                                                                        value={playerName}
-                                                                                                                                                                                                                                                                                                                                                                                        onChange={(e) => setPlayerName(e.target.value)}
-                                                                                                                                                                                                                                                                                                                                                                                                        onKeyPress={handleNameKeyPress}
-                                                                                                                                                                                                                                                                                                                                                                                                                        placeholder="Ej: CommanderX"
-                                                                                                                                                                                                                                                                                                                                                                                                                                        className="bg-blue-900/50 border-blue-500 text-white placeholder-blue-300"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                        maxLength={20}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                      />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <p className="text-xs text-blue-300">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    Mínimo 2 caracteres
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </p>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <Button 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    onClick={handleNameSubmit}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  disabled={playerName.trim().length < 2}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            >
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          Continuar
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </Button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </CardContent>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </Card>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        {/* Información del juego */}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <Card className="mt-6 bg-gray-900 border-gray-700">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <CardContent className="p-4">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <div className="text-center space-y-2">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <h3 className="text-sm font-semibold text-gray-300">Misión: Escapar de Cyber Concord</h3>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <p className="text-xs text-gray-400">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  Completa quests, gana experiencia y construye tu Ark para llegar a Sanctaris
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </p>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </CardContent>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </Card>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        );
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          }
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            if (step === 'commander') {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                return (
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <div className={`space-y-6 ${className}`}>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <Card className="bg-gradient-to-r from-purple-900 to-blue-900 border-purple-600">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <CardContent className="p-6">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <div className="text-center space-y-2">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <h2 className="text-xl font-bold text-white">¡Bienvenido, {playerName}!</h2>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <p className="text-purple-200">Selecciona tu comandante para comenzar la misión</p>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </CardContent>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </Card>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <CommanderSelection
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        selectedCommander={selectedCommander}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  onCommanderSelect={handleCommanderSelect}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          {isLoading && (
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <Card className="bg-blue-900 border-blue-600">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <CardContent className="p-6 text-center">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <div className="space-y-2">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <div className="animate-spin w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full mx-auto"></div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              <p className="text-blue-300">Iniciando misión...</p>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </CardContent>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </Card>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          )}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    );
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      }
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        return null;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        }
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
+      <Card className="w-full max-w-sm">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            initial={{ x: 300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -300, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {getStepContent()}
+          </motion.div>
+        </AnimatePresence>
+      </Card>
+    </div>
+  );
+}
