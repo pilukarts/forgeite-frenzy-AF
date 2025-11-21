@@ -1,4 +1,5 @@
 
+
 // FIREBASE STUDIO - VIBRANT AND DYNAMIC COMPOSITION
 // Commander centered + ARK right + Harmonically distributed buttons
 // Vibrant environment with holograms that invites to play
@@ -95,16 +96,15 @@ const HolographicButton = ({
         shadow-2xl hover:shadow-[0_0_30px_rgba(59,130,246,0.8)]
         transition-all duration-300 text-white font-bold
         overflow-hidden group transform-gpu
+        flex items-center justify-center gap-2 z-10
         ${floating ? 'shadow-lg shadow-primary/20' : ''}
         ${className}
       `}
       {...props}
     >
-      {/* Multiple layers of holographic shine */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
       <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/20 group-hover:from-white/15 transition-all duration-300" />
       
-      {/* Floating particles */}
       {floating && (
         <div className="absolute inset-0 pointer-events-none">
           {Array.from({ length: 3 }).map((_, i) => (
@@ -130,13 +130,10 @@ const HolographicButton = ({
         </div>
       )}
       
-      {/* Content */}
-      <div className="relative flex items-center justify-center gap-2 z-10">
-        {Icon && <Icon className={`${size === 'large' ? 'h-6 w-6' : size === 'small' ? 'h-3 w-3' : 'h-4 w-4'}`} />}
-        <span className={`${size === 'small' ? 'text-xs' : size === 'large' ? 'text-base' : 'text-sm'} font-bold`}>
-          {children}
-        </span>
-      </div>
+      {Icon && <Icon className={`${size === 'large' ? 'h-6 w-6' : size === 'small' ? 'h-3 w-3' : 'h-4 w-4'}`} />}
+      <span className={`${size === 'small' ? 'text-xs' : size === 'large' ? 'text-base' : 'text-sm'} font-bold`}>
+        {children}
+      </span>
     </Comp>
   );
 };
@@ -158,18 +155,16 @@ const EnhancedArk = ({ onTap, timeLeft, tapCount }: any) => (
       rounded-3xl shadow-2xl shadow-indigo-500/60 hover:shadow-indigo-500/80
       transition-all duration-300 p-4 text-center group-hover:scale-105
     `}>
-      {/* Energy effects */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1500" />
       <div className="absolute inset-0 bg-gradient-to-b from-indigo-400/20 via-transparent to-purple-600/20 animate-pulse" />
       
       <CardContent className="p-0 flex flex-col items-center space-y-3 relative z-10">
-        {/* Ark Image with effects */}
         <div className="relative h-20 w-20">
           <div className="absolute inset-0 bg-gradient-to-r from-indigo-400/40 to-purple-500/40 rounded-full animate-pulse blur-xl" />
           <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/30 rounded-full" />
           <Image 
             src={IMAGE_PATHS.ark}
-            alt="Star-Forge Ark" 
+            alt="Ark-Forge" 
             width={80}
             height={80}
             style={{objectFit: 'contain'}} 
@@ -178,7 +173,6 @@ const EnhancedArk = ({ onTap, timeLeft, tapCount }: any) => (
           />
         </div>
         
-        {/* Text with glow */}
         <div className="text-center">
           <p className="text-sm font-bold text-white mb-1 drop-shadow-[0_0_10px_rgba(99,102,241,0.8)]">
             ARK EVACUATION
@@ -189,7 +183,6 @@ const EnhancedArk = ({ onTap, timeLeft, tapCount }: any) => (
         </div>
       </CardContent>
       
-      {/* Tap indicator */}
       {tapCount > 0 && (
         <motion.div
           initial={{ opacity: 0, scale: 0 }}
@@ -290,7 +283,6 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Enhanced animated points */}
       <AnimatePresence>
         {tapCount > 0 && Array.from({ length: 3 }).map((_, i) => (
           <motion.div
@@ -321,7 +313,6 @@ export default function HomePage() {
       </AnimatePresence>
 
       <div className="relative h-screen w-full overflow-hidden">
-        {/* Enhanced background */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed"
           style={{ 
@@ -330,7 +321,6 @@ export default function HomePage() {
           }}
         />
         
-        {/* Background particle effects */}
         <div className="absolute inset-0">
           {Array.from({ length: 20 }).map((_, i) => (
             <motion.div
@@ -354,200 +344,71 @@ export default function HomePage() {
           ))}
         </div>
 
-        {/* MAIN CONTENT WITH DYNAMIC COMPOSITION */}
-        <div className="relative h-full flex flex-col items-center justify-center">
+        <div className="relative h-full flex flex-col items-center justify-center p-4">
+          <motion.div 
+            className="absolute top-4 w-full flex justify-between items-start"
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
+            <HolographicButton 
+                onClick={toggleMusic} 
+                icon={isMusicPlaying ? Music : Music2}
+                color="purple"
+                size="small"
+            >
+                Sound
+            </HolographicButton>
+            <div className="flex gap-2">
+                <a href="https://allianceforge.online" target="_blank" rel="noopener noreferrer">
+                  <HolographicButton icon={Globe} color="orange" size="small">Web</HolographicButton>
+                </a>
+                <a href="https://t.me/ForgeiteFrenzyGame_bot" target="_blank" rel="noopener noreferrer">
+                  <HolographicButton icon={Bot} color="pink" size="small">App</HolographicButton>
+                </a>
+            </div>
+            <div className="w-[120px]">
+                  <EnhancedArk 
+                    onTap={() => handleTapWithAnimation(true)}
+                    timeLeft={timeLeft}
+                    tapCount={tapCount}
+                  />
+            </div>
+          </motion.div>
 
-          {/* MAIN AREA - HARMONIC COMPOSITION */}
-          <div className="relative w-full h-full flex items-center justify-center">
-            
-            {/* CENTERED COMMANDER - MAIN ELEMENT */}
-            <motion.div
-              className="absolute"
+          <motion.div
+              className="relative cursor-pointer group"
+              style={{ width: 'clamp(250px, 50vw, 350px)', height: 'auto' }}
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
             >
-              <div className="relative cursor-pointer group"
-                   onClick={() => handleTapWithAnimation(false)}>
-                
-                {/* Commander main aura */}
-                <motion.div
-                  className="absolute -inset-4 rounded-full"
-                  animate={{
-                    boxShadow: [
-                      '0 0 40px hsla(var(--dynamic-commander-glow), 0.4)',
-                      '0 0 70px hsla(var(--dynamic-commander-glow), 0.7)',
-                      '0 0 40px hsla(var(--dynamic-commander-glow), 0.4)'
-                    ]
-                  }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <div className="w-56 h-56 rounded-full bg-gradient-to-r from-blue-500/10 via-purple-500/20 to-pink-500/10 blur-2xl" />
-                </motion.div>
-
-                {/* Main circle - larger */}
-                <motion.div
-                  className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-primary/80 shadow-2xl"
-                  animate={tapCount > 0 ? { 
-                    scale: [1, 1.05, 1],
-                    rotate: [0, 1, -1, 0]
-                  } : {}}
-                  transition={{ duration: 0.3 }}
-                >
-                  <CommanderPortrait onTap={() => handleTapWithAnimation(false)} onLogoTap={() => handleTapWithAnimation(true)}/>
-                </motion.div>
-                
-                {/* Commander change button */}
-                <motion.button
-                  className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-primary/90 to-purple-500/80 backdrop-blur-xl rounded-full border border-primary/60 shadow-2xl text-sm font-bold text-white"
+              <CommanderPortrait onTap={() => handleTapWithAnimation(false)} onLogoTap={() => handleTapWithAnimation(true)}/>
+          </motion.div>
+          
+          <motion.div
+            className="absolute bottom-4 w-full max-w-md grid grid-cols-3 gap-2"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+          >
+              <Link href="/quests" className="w-full"><HolographicButton icon={ListChecks} color="green" size="small" asChild>Missions</HolographicButton></Link>
+              <Link href="/battle-pass" className="w-full"><HolographicButton icon={Swords} color="gold" size="small" asChild>Rewards</HolographicButton></Link>
+              <Link href="/community" className="w-full"><HolographicButton icon={Users} color="teal" size="small" asChild>Community</HolographicButton></Link>
+              <Link href="/alliance-chat" className="w-full"><HolographicButton icon={MessageSquare} color="blue" size="small" asChild>Alliance</HolographicButton></Link>
+               <motion.button
+                  className="w-full col-span-1"
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleCommander();
                   }}
-                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
-                  Change
+                  <HolographicButton icon={Replace} color="purple" size="small" asChild>Change</HolographicButton>
                 </motion.button>
-              </div>
-            </motion.div>
-
-            {/* ARK - RIGHT UPPER */}
-            <motion.div
-              className="absolute top-20 right-8 hidden lg:block"
-              initial={{ opacity: 0, x: 100, rotate: 15 }}
-              animate={{ opacity: 1, x: 0, rotate: 0 }}
-              transition={{ delay: 0.7, duration: 0.6 }}
-            >
-              <EnhancedArk 
-                onTap={() => handleTapWithAnimation(true)}
-                timeLeft={timeLeft}
-                tapCount={tapCount}
-              />
-            </motion.div>
-
-            {/* HARMONICALLY DISTRIBUTED BUTTONS */}
-            
-            {/* Upper left area - Main actions */}
-            <motion.div
-              className="absolute top-12 left-8 space-y-4"
-              initial={{ opacity: 0, x: -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.9, duration: 0.5 }}
-            >
-              <HolographicButton 
-                onClick={toggleMusic} 
-                icon={isMusicPlaying ? Music : Music2}
-                color="purple"
-                floating
-              >
-                Sound
-              </HolographicButton>
-              
-               <Link href="/alliance-chat">
-                <HolographicButton
-                  icon={Share2}
-                  color="blue"
-                  floating
-                  asChild
-                >
-                  Alliance
-                </HolographicButton>
-              </Link>
-            </motion.div>
-
-            {/* Lower left area - Game actions */}
-            <motion.div
-              className="absolute bottom-16 left-8 space-y-4"
-              initial={{ opacity: 0, x: -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.1, duration: 0.5 }}
-            >
-              <Link href="/quests">
-                <HolographicButton 
-                  icon={ListChecks}
-                  color="green"
-                  floating
-                  asChild
-                >
-                  Missions
-                </HolographicButton>
-              </Link>
-              
-              <Link href="/battle-pass">
-                <HolographicButton 
-                  icon={Swords}
-                  color="gold"
-                  floating
-                  asChild
-                >
-                  Rewards
-                </HolographicButton>
-              </Link>
-            </motion.div>
-
-            {/* Lower right area - Social */}
-            <motion.div
-              className="absolute bottom-16 right-8 space-y-4"
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.3, duration: 0.5 }}
-            >
-              <a href="https://t.me/AllianceForgeHQ" target="_blank" rel="noopener noreferrer">
-                <HolographicButton 
-                  icon={Send}
-                  color="teal"
-                  floating
-                  asChild
-                >
-                  Community
-                </HolographicButton>
-              </a>
-              
-              <Link href="/alliance-chat">
-                <HolographicButton 
-                  icon={MessageSquare}
-                  color="red"
-                  floating
-                  asChild
-                >
-                  Chat
-                </HolographicButton>
-              </Link>
-            </motion.div>
-
-            {/* Central upper area - Navigation */}
-            <motion.div
-              className="absolute top-8 left-1/2 transform -translate-x-1/2 flex gap-4"
-              initial={{ opacity: 0, y: -50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.5, duration: 0.5 }}
-            >
-              <a href="https://allianceforge.online" target="_blank" rel="noopener noreferrer">
-                <HolographicButton 
-                  icon={Globe}
-                  color="orange"
-                  size="default"
-                  floating
-                  asChild
-                >
-                  Web Portal
-                </HolographicButton>
-              </a>
-              
-              <a href="https://t.me/ForgeiteFrenzyGame_bot" target="_blank" rel="noopener noreferrer">
-                <HolographicButton 
-                  icon={Bot}
-                  color="pink"
-                  size="default"
-                  floating
-                  asChild
-                >
-                  Mini App
-                </HolographicButton>
-              </a>
-            </motion.div>
-          </div>
+              <HolographicButton onClick={handleInviteClick} icon={Share2} color="pink" size="small">Invite</HolographicButton>
+          </motion.div>
         </div>
       </div>
     </>

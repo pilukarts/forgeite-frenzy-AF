@@ -9,10 +9,10 @@ export const SEASONS_DATA: Season[] = [
     id: 'chapter1',
     chapter: 1,
     title: "The Concord's Shadow",
-    description: "Gather 'Ark Construction Materials' to build the massive StarForge Arks on Earth.",
+    description: "Gather 'Ark Construction Materials' to build the massive Ark-Forge on Earth.",
     objectiveResourceName: 'Ark Construction Materials',
     objectiveResourceIcon: Ship,
-    coreBriefingObjective: "construct StarForge Arks to escape Earth before the Cyber Concord attacks",
+    coreBriefingObjective: "construct Ark-Forge to escape Earth before the Cyber Concord attacks",
     unlocksCore: true,
   },
   {
@@ -338,3 +338,4 @@ export const ALL_AVATARS: { url: string; sex: 'male' | 'female'; }[] = [
     { url: "/images/global/commander-man-full.png", sex: 'male' },
     { url: "/images/global/commander-woman-full.png", sex: 'female' },
 ];
+

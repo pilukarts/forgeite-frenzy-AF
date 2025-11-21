@@ -48,7 +48,7 @@ export const placeholderNfts: PlaceholderNft[] = [
   },
   {
     id: "AF-004",
-    name: "Star-Forge Ark",
+    name: "Ark-Forge",
     description: "The pinnacle of human engineering. A colossal vessel designed to carry the last of humanity to a new home among the stars.",
     imageUrl: images.nfts.starforge_ark_nft,
     aiHint: "massive colony spaceship",

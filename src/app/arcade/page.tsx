@@ -45,7 +45,7 @@ const ArcadePage: React.FC = () => {
               {/* You can add a preview image here if you want */}
             </CardContent>
             <CardContent>
-               <Link href="/minigame/gemstone-burst" className="w-full">
+               <Link href="/arcade/gemstone-burst" className="w-full">
                 <Button className="w-full">Play Now</Button>
               </Link>
             </CardContent>
@@ -62,7 +62,7 @@ const ArcadePage: React.FC = () => {
               {/* You can add a preview image here if you want */}
             </CardContent>
             <CardContent>
-               <Link href="/minigame/galactic-pacman" className="w-full">
+               <Link href="/arcade/galactic-pacman" className="w-full">
                  <Button className="w-full">Play Now</Button>
               </Link>
             </CardContent>

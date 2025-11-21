@@ -86,3 +86,5 @@ const BottomNavBar: React.FC = () => {
 };
 
 export default BottomNavBar;
+
+    

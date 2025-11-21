@@ -37,13 +37,10 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
     >
       <motion.div 
         className="absolute inset-0 commander-aura-glow"
-        style={{
-            borderRadius: '50%',
-        }}
       />
 
       <motion.div 
-        className="relative w-full h-full rounded-full overflow-hidden"
+        className="relative w-full h-full"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -51,9 +48,11 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
           src={commanderImage}
           alt="Commander Portrait"
           data-ai-hint={dataAiHint}
-          fill
+          layout="responsive"
+          width={300}
+          height={480}
           style={{ objectFit: 'contain' }}
-          className="group-hover:scale-110 transition-transform duration-300"
+          className="group-hover:scale-105 transition-transform duration-300 drop-shadow-2xl"
           priority
         />
       </motion.div>

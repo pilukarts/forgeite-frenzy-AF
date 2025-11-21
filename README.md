@@ -4,7 +4,7 @@ Welcome to the official repository for **Alliance Forge: Forgeite Frenzy**, a sc
 
 ## 🚀 Game Concept
 
-In a desperate future, humanity must escape the clutches of the encroaching Cyber Concord. As a Commander in the Alliance, your mission is to gather critical resources to build colossal StarForge Arks and guide your people to a new home in the Sanctaris system.
+In a desperate future, humanity must escape the clutches of the encroaching Cyber Concord. As a Commander in the Alliance, your mission is to gather critical resources to build colossal Ark-Forge and guide your people to a new home in the Sanctaris system.
 
 This game is a "tap-to-earn" experience where players progress through seasons, complete quests, and climb the leaderboards.
 
