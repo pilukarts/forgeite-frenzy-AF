@@ -8,8 +8,8 @@
  * - CoreAskOutput - The return type for the askCore function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'zod';
 
 export const CoreAskInputSchema = z.object({
   question: z.string().describe('The question the player is asking C.O.R.E.'),

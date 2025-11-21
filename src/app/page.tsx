@@ -1,3 +1,4 @@
+
 // FIREBASE STUDIO - VIBRANT AND DYNAMIC COMPOSITION
 // Commander centered + ARK right + Harmonically distributed buttons
 // Vibrant environment with holograms that invites to play
@@ -12,13 +13,14 @@ import { Button } from '@/components/ui/button';
 import { 
   Zap, Share2, Globe, Replace, Music, Music2, Bot, 
   Settings, Users, Star, Crown, Heart, Shield, Target, 
-  Trophy, Gamepad2, MessageSquare, ExternalLink, Send
+  Trophy, Gamepad2, MessageSquare, ExternalLink, Send, ListChecks, Swords
 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import IntroScreen from '@/components/intro/IntroScreen';
 import images from '@/lib/placeholder-images.json';
+import Link from 'next/link';
 
 // Image configuration
 const IMAGE_PATHS = {
@@ -442,14 +444,16 @@ export default function HomePage() {
                 Sound
               </HolographicButton>
               
-              <HolographicButton 
-                onClick={handleInviteClick} 
-                icon={Share2}
-                color="blue"
-                floating
-              >
-                Alliance
-              </HolographicButton>
+               <Link href="/alliance-chat">
+                <HolographicButton
+                  icon={Share2}
+                  color="blue"
+                  floating
+                  asChild
+                >
+                  Alliance
+                </HolographicButton>
+              </Link>
             </motion.div>
 
             {/* Lower left area - Game actions */}
@@ -459,21 +463,27 @@ export default function HomePage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 1.1, duration: 0.5 }}
             >
-              <HolographicButton 
-                icon={Gamepad2}
-                color="green"
-                floating
-              >
-                Missions
-              </HolographicButton>
+              <Link href="/quests">
+                <HolographicButton 
+                  icon={ListChecks}
+                  color="green"
+                  floating
+                  asChild
+                >
+                  Missions
+                </HolographicButton>
+              </Link>
               
-              <HolographicButton 
-                icon={Trophy}
-                color="gold"
-                floating
-              >
-                Rewards
-              </HolographicButton>
+              <Link href="/battle-pass">
+                <HolographicButton 
+                  icon={Swords}
+                  color="gold"
+                  floating
+                  asChild
+                >
+                  Rewards
+                </HolographicButton>
+              </Link>
             </motion.div>
 
             {/* Lower right area - Social */}
@@ -494,13 +504,16 @@ export default function HomePage() {
                 </HolographicButton>
               </a>
               
-              <HolographicButton 
-                icon={MessageSquare}
-                color="red"
-                floating
-              >
-                Chat
-              </HolographicButton>
+              <Link href="/alliance-chat">
+                <HolographicButton 
+                  icon={MessageSquare}
+                  color="red"
+                  floating
+                  asChild
+                >
+                  Chat
+                </HolographicButton>
+              </Link>
             </motion.div>
 
             {/* Central upper area - Navigation */}
@@ -540,3 +553,4 @@ export default function HomePage() {
     </>
   );
 }
+

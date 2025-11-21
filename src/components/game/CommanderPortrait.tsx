@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useGame } from '@/contexts/GameContext';
 import Image from 'next/image';
@@ -51,7 +52,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
           alt="Commander Portrait"
           data-ai-hint={dataAiHint}
           fill
-          style={{ objectFit: 'cover' }}
+          style={{ objectFit: 'contain' }}
           className="group-hover:scale-110 transition-transform duration-300"
           priority
         />
