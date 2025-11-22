@@ -1,3 +1,4 @@
+
 "use client";
 import React, { ReactNode, useEffect, useState } from "react";
 import BottomNavBar from "@/components/navigation/BottomNavBar";
@@ -93,14 +94,23 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         <div className="relative flex w-full h-full max-w-7xl mx-auto bg-background/95 shadow-2xl overflow-hidden md:h-screen">
           <SidebarNav />
           <div className="flex flex-col flex-grow min-h-screen">
-            {/* HEADER / HERO (NO IMAGES, NO COMMANDER HERE) */}
             <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
               <div className="flex items-center justify-between gap-2">
-                <PlayerProfileHeader profile={playerProfile} />
-                <TapStatusCard />
+                {/* Left: logo / small profile (portrait ONLY here if you want) */}
+                <div className="flex items-center gap-4">
+                  <PlayerProfileHeader profile={playerProfile} />
+                </div>
+
+                {/* Center: top taps / status (no large images) */}
+                <div className="flex-1 flex items-center justify-center">
+                  <TapStatusCard />
+                </div>
+
+                {/* Right: connect / buy etc (NO commander here) */}
                 <div className="flex items-start gap-1">
                   <ResourceDisplay seasonResourceAmount={seasonProgress} auronCount={playerProfile.auron ?? 0} />
                   <div className="flex flex-col items-start gap-1 ml-1 pl-1 border-l border-border">
+                    {/* wallet / buy buttons */}
                     <ConnectButton.Custom>
                       {({
                         account,
@@ -185,7 +195,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               </div>
             </header>
 
-            {/* TAP AREA: commander full-body, centered and tappable (moved OUT of hero) */}
+            {/* TAP AREA: CommanderCenter is mounted here ONLY (FULL-BODY and halo if showHalo=true) */}
             <main className="flex-grow overflow-y-auto pb-[56px] md:pb-0 flex flex-col">
               <section id="tap-area" className="w-full mt-4">
                 <div className="w-full max-w-7xl mx-auto flex items-center justify-center relative">
@@ -198,7 +208,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                     rightOffset="9rem"
                     onAvatarClick={() => setCommanderModalOpen(true)}
                     onTap={() => {
-                      /* registerTap?.() if available */
+                      /* registerTap?.() */
                     }}
                     className="bg-transparent"
                   />
@@ -263,3 +273,5 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 };
 
 export default AppLayout;
+
+    
