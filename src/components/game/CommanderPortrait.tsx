@@ -51,8 +51,7 @@ const CommanderPortrait: React.FC<CommanderPortraitProps> = ({ onTap, onLogoTap 
           layout="responsive"
           width={300}
           height={480}
-          style={{ objectFit: 'contain' }}
-          className="group-hover:scale-105 transition-transform duration-300 drop-shadow-2xl"
+          className="object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-2xl"
           priority
         />
       </motion.div>

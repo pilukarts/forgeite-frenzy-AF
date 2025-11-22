@@ -240,14 +240,12 @@ export default function HomePage() {
   } = useGame();
   const { toast } = useToast();
   
-  // Local states
   const [tapCount, setTapCount] = useState(0);
   const timeLeft = ArkCountdown();
 
   if (isLoading) return <IntroScreen />;
   if (!isInitialSetupDone || !playerProfile) return <PlayerSetup />;
 
-  // Enhanced tap function
   const handleTapWithAnimation = (isLogoTap: boolean) => {
     setTapCount(prev => prev + 1);
     handleTap(isLogoTap);
@@ -258,7 +256,6 @@ export default function HomePage() {
   };
 
 
-  // Invite function
   const handleInviteClick = async () => {
     if (!playerProfile.referralCode) return;
     
@@ -345,10 +342,11 @@ export default function HomePage() {
         </div>
 
         <div className="relative h-full flex flex-col items-center justify-center p-4">
+          
           <motion.div 
-            className="absolute top-4 w-full flex justify-between items-start"
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
+            className="absolute top-4 left-4 flex flex-col gap-2"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.5 }}
           >
             <HolographicButton 
@@ -359,26 +357,30 @@ export default function HomePage() {
             >
                 Sound
             </HolographicButton>
-            <div className="flex gap-2">
-                <a href="https://allianceforge.online" target="_blank" rel="noopener noreferrer">
-                  <HolographicButton icon={Globe} color="orange" size="small">Web</HolographicButton>
-                </a>
-                <a href="https://t.me/ForgeiteFrenzyGame_bot" target="_blank" rel="noopener noreferrer">
-                  <HolographicButton icon={Bot} color="pink" size="small">App</HolographicButton>
-                </a>
-            </div>
-            <div className="w-[120px]">
-                  <EnhancedArk 
-                    onTap={() => handleTapWithAnimation(true)}
-                    timeLeft={timeLeft}
-                    tapCount={tapCount}
-                  />
-            </div>
+             <a href="https://allianceforge.online" target="_blank" rel="noopener noreferrer">
+                <HolographicButton icon={Globe} color="orange" size="small">Web</HolographicButton>
+            </a>
+            <a href="https://t.me/ForgeiteFrenzyGame_bot" target="_blank" rel="noopener noreferrer">
+                <HolographicButton icon={Bot} color="pink" size="small">App</HolographicButton>
+            </a>
+          </motion.div>
+
+          <motion.div 
+            className="absolute top-4 right-4 w-[120px]"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
+            <EnhancedArk 
+              onTap={() => handleTapWithAnimation(true)}
+              timeLeft={timeLeft}
+              tapCount={tapCount}
+            />
           </motion.div>
 
           <motion.div
-              className="relative cursor-pointer group"
-              style={{ width: 'clamp(250px, 50vw, 350px)', height: 'auto' }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
+              style={{ width: 'clamp(180px, 35vw, 280px)', height: 'auto' }} // Adjusted size
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
@@ -387,26 +389,16 @@ export default function HomePage() {
           </motion.div>
           
           <motion.div
-            className="absolute bottom-4 w-full max-w-md grid grid-cols-3 gap-2"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
+            className="absolute right-4 bottom-1/2 translate-y-1/2 flex flex-col gap-2"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.7, duration: 0.5 }}
           >
               <Link href="/quests" className="w-full"><HolographicButton icon={ListChecks} color="green" size="small" asChild>Missions</HolographicButton></Link>
               <Link href="/battle-pass" className="w-full"><HolographicButton icon={Swords} color="gold" size="small" asChild>Rewards</HolographicButton></Link>
               <Link href="/community" className="w-full"><HolographicButton icon={Users} color="teal" size="small" asChild>Community</HolographicButton></Link>
               <Link href="/alliance-chat" className="w-full"><HolographicButton icon={MessageSquare} color="blue" size="small" asChild>Alliance</HolographicButton></Link>
-               <motion.button
-                  className="w-full col-span-1"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleCommander();
-                  }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <HolographicButton icon={Replace} color="purple" size="small" asChild>Change</HolographicButton>
-                </motion.button>
+              <HolographicButton onClick={toggleCommander} icon={Replace} color="purple" size="small">Change</HolographicButton>
               <HolographicButton onClick={handleInviteClick} icon={Share2} color="pink" size="small">Invite</HolographicButton>
           </motion.div>
         </div>
@@ -414,4 +406,5 @@ export default function HomePage() {
     </>
   );
 }
+
 

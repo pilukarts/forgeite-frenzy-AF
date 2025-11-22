@@ -1,3 +1,4 @@
+
 "use client";
 import React, { createContext, useState, useEffect, useRef, useCallback, useContext } from 'react';
 import type {
@@ -15,7 +16,7 @@ import type {
   BattlePassLevel,
 } from '@/lib/types';
 import { Buffer } from 'buffer';
-import WebApp from '@twa-dev/sdk';
+// import WebApp from '@twa-dev/sdk'; // Removed from top-level import
 import {
   SEASONS_DATA,
   UPGRADES_DATA,
@@ -145,7 +146,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isTelegramEnv, setIsTelegramEnv] = useState(false);
 
   useEffect(() => {
-    setIsTelegramEnv(WebApp.platform !== 'unknown');
+    // Dynamically import and check for Telegram environment only on the client side.
+    import('@twa-dev/sdk').then(WebApp => {
+        setIsTelegramEnv(WebApp.default.platform !== 'unknown');
+    });
   }, []);
 
   const addCoreMessage = (type: CoreMessage['type'], content: string) => {
@@ -788,13 +792,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // --- Telegram Wallet ---
   const connectTelegramWallet = () => {
     if (!isTelegramEnv || !playerProfile) return;
-    WebApp.CloudStorage.setItem('isWalletConnected', 'true', (error, success) => {
-      if (success) {
-        setPlayerProfile(p => p ? { ...p, isTelegramWalletConnected: true } : null);
-        toast({ title: 'Telegram Wallet Connected!', description: 'You can now use your wallet for purchases.' });
-      } else {
-        toast({ title: 'Connection Failed', description: 'Could not connect to Telegram Wallet.', variant: 'destructive' });
-      }
+    import('@twa-dev/sdk').then(WebApp => {
+        WebApp.default.CloudStorage.setItem('isWalletConnected', 'true', (error, success) => {
+            if (success) {
+                setPlayerProfile(p => p ? { ...p, isTelegramWalletConnected: true } : null);
+                toast({ title: 'Telegram Wallet Connected!', description: 'You can now use your wallet for purchases.' });
+            } else {
+                toast({ title: 'Connection Failed', description: 'Could not connect to Telegram Wallet.', variant: 'destructive' });
+            }
+        });
     });
   };
 
@@ -867,3 +873,5 @@ export const useGame = (): GameContextType => {
   }
   return context;
 };
+
+    
