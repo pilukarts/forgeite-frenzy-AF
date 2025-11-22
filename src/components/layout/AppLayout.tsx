@@ -1,8 +1,7 @@
-
 "use client";
 import React, { ReactNode, useEffect, useState } from "react";
 import BottomNavBar from "@/components/navigation/BottomNavBar";
-import PlayerProfileHeader from "@/components/player/PlayerProfileHeader";
+// PlayerProfileHeader removed from header to avoid rendering commander there
 import ResourceDisplay from "@/components/game/ResourceDisplay";
 import { Button } from "@/components/ui/button";
 import { useGame } from "@/contexts/GameContext";
@@ -16,6 +15,8 @@ import SidebarNav from "@/components/navigation/SidebarNav";
 import { Card, CardContent } from "@/components/ui/card";
 import LiveDashboard from "@/components/game/LiveDashboard";
 import CommanderCenter from "@/components/game/CommanderCenter";
+import ArkForgePanel from "@/components/game/ArkForgePanel";
+import RightSideButtons from "@/components/game/RightSideButtons";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -96,9 +97,17 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           <div className="flex flex-col flex-grow min-h-screen">
             <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
               <div className="flex items-center justify-between gap-2">
-                {/* Left: logo / small profile (portrait ONLY here if you want) */}
+                {/* Left: small profile (thumbnail + name) - commander removed from header */}
                 <div className="flex items-center gap-4">
-                  <PlayerProfileHeader profile={playerProfile} />
+                  <img
+                    src={playerProfile.portraitUrl ?? "/default-avatar.png"}
+                    alt="Profile"
+                    className="w-10 h-10 rounded-full object-cover border border-border"
+                  />
+                  <div className="leading-tight">
+                    <div className="text-sm font-semibold">{playerProfile.name}</div>
+                    <div className="text-xs text-muted-foreground">Lv {playerProfile.level} • {playerProfile.rankTitle}</div>
+                  </div>
                 </div>
 
                 {/* Center: top taps / status (no large images) */}
@@ -195,29 +204,34 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               </div>
             </header>
 
-            {/* TAP AREA: CommanderCenter is mounted here ONLY (FULL-BODY and halo if showHalo=true) */}
-            <main className="flex-grow overflow-y-auto pb-[56px] md:pb-0 flex flex-col">
-              <section id="tap-area" className="w-full mt-4">
-                <div className="w-full max-w-7xl mx-auto flex items-center justify-center relative">
+            {/* TAP AREA: commander full-body centered, ArkForge on the left, buttons on the right */}
+            <section id="tap-area" className="w-full mt-4">
+              <div className="w-full max-w-7xl mx-auto relative" style={{ minHeight: "62vh" }}>
+                <div className="flex items-center justify-center w-full h-full">
                   <CommanderCenter
                     fullBodyUrl={
                       playerProfile.avatarUrl ??
                       (playerProfile.commanderSex === "female" ? "/images/commander-woman-full.png" : "/images/commander-man-full.png")
                     }
+                    avatarUrl={playerProfile.avatarUrl}
                     showHalo={true}
-                    rightOffset="9rem"
                     onAvatarClick={() => setCommanderModalOpen(true)}
-                    onTap={() => {
-                      /* registerTap?.() */
-                    }}
+                    // leftPanel/rightPanel are positioned at the character's hands using CommanderCenter's internal calculation
+                      leftPanel={<ArkForgePanel countdown={"03:12:45"} />}
+                      rightPanel={<RightSideButtons />}
+                    // adjust these if the hand anchors don't match the panels (values between 0 and 1)
+                    handLeftX={0.16}
+                    handRightX={0.82}
+                    handY={0.62}
                     className="bg-transparent"
+                    onTap={() => { /* registerTap?.() */ }}
                   />
                 </div>
-              </section>
+              </div>
+            </section>
 
-              {/* Main content below tap area */}
-              <section className="px-4 md:px-6 lg:px-8">{children}</section>
-            </main>
+            {/* Main content below tap area */}
+            <section className="px-4 md:px-6 lg:px-8">{children}</section>
 
             <CoreDisplay />
             <LiveDashboard />
@@ -233,7 +247,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             <Card>
               <CardContent className="flex flex-col gap-4">
                 <div className="flex items-center gap-4">
-                  <img src={playerProfile.portraitUrl ?? playerProfile.avatarUrl ?? "/default-avatar.png"} alt="Comandante" className="w-20 h-20 rounded-full object-cover border-2" />
+                  <img src={playerProfile.portraitUrl ?? playerProfile.avatarUrl ?? "/default-avatar.png"} alt="Profile" className="w-20 h-20 rounded-full object-cover border-2" />
                   <div>
                     <h3 className="text-lg font-semibold">{playerProfile.name}</h3>
                     <p className="text-sm text-muted-foreground">Level {playerProfile.level} • {playerProfile.rankTitle}</p>
@@ -273,5 +287,3 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 };
 
 export default AppLayout;
-
-    

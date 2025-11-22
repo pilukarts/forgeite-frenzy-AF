@@ -1,6 +1,6 @@
 
 "use client";
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode } from 'react';
 import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import { mainnet, polygon, optimism, arbitrum, base } from 'wagmi/chains';
@@ -36,15 +36,6 @@ const config = getDefaultConfig({
 const queryClient = new QueryClient();
 
 const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
-    const [mounted, setMounted] = useState(false);
-    useEffect(() => {
-        setMounted(true);
-    }, []);
-
-    if (!mounted) {
-        return null;
-    }
-    
     return (
         <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
