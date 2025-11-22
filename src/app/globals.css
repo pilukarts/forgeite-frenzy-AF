@@ -101,9 +101,7 @@
     --dynamic-commander-glow: 45 100% 50%; 
     --dynamic-core-color: 45 100% 50%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }

@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* small helper button style used in header nav */
+  .btn-ghost-sm {
+    @apply text-sm px-3 py-1 rounded-md bg-transparent;
+  }
+  .btn-ghost-sm:hover {
+    @apply bg-white/3;
+  }
+}
+
+/* Defensive: ensure tap-area sits above page background but below overlays */
+#tap-area { z-index: 10; position: relative; }
+
+/* Prevent pointer conflicts: make header links clickable while Commander overlay captures taps only inside tap-area */
+header { pointer-events: auto; }
+.commander-center img { pointer-events: none; }
+.commander-center button[aria-label="Tap commander"] { pointer-events: auto; }

@@ -1,7 +1,6 @@
 "use client";
 import React, { ReactNode, useEffect, useState } from "react";
 import BottomNavBar from "@/components/navigation/BottomNavBar";
-// PlayerProfileHeader removed from header to avoid rendering commander there
 import ResourceDisplay from "@/components/game/ResourceDisplay";
 import { Button } from "@/components/ui/button";
 import { useGame } from "@/contexts/GameContext";
@@ -17,6 +16,8 @@ import LiveDashboard from "@/components/game/LiveDashboard";
 import CommanderCenter from "@/components/game/CommanderCenter";
 import ArkForgePanel from "@/components/game/ArkForgePanel";
 import RightSideButtons from "@/components/game/RightSideButtons";
+import PlayerProfileHeader from "../player/PlayerProfileHeader";
+import images from "@/lib/placeholder-images.json";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -62,16 +63,16 @@ const TapStatusCard: React.FC = () => {
   const isOutOfTaps = playerProfile.currentTaps <= 0 && timeLeftForTapRegen !== null && timeLeftForTapRegen > 0;
 
   return (
-    <Card className="bg-card/50 shadow-sm flex-grow text-center p-1">
-      <CardContent className="p-0">
+    <div className="w-full max-w-xs">
+      <div className="bg-card/50 shadow-sm p-1 rounded-md text-center">
         <p className="text-sm font-semibold text-primary font-headline flex items-center justify-center gap-1">
           <Zap className="h-4 w-4" /> Taps: {playerProfile.currentTaps.toLocaleString()} / {playerProfile.maxTaps.toLocaleString()}
         </p>
         {isOutOfTaps && timeLeftForTapRegen !== null && (
           <p className="text-xs text-orange-400 animate-pulse">Regen in: {formatTimeLeft(timeLeftForTapRegen)}</p>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
@@ -91,147 +92,39 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
   return (
     <>
-      <div className="flex flex-col min-h-screen bg-background text-foreground items-center justify-center">
-        <div className="relative flex w-full h-full max-w-7xl mx-auto bg-background/95 shadow-2xl overflow-hidden md:h-screen">
+      <div className="flex flex-col min-h-screen bg-background text-foreground">
+        <div className="relative flex w-full max-w-7xl mx-auto bg-background/95 shadow-2xl overflow-hidden md:h-auto">
           <SidebarNav />
+
           <div className="flex flex-col flex-grow min-h-screen">
+            {/* HEADER: Contains profile, status, and resources */}
             <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
               <div className="flex items-center justify-between gap-2">
-                {/* Left: small profile (thumbnail + name) - commander removed from header */}
+                {/* Left: logo / small profile */}
                 <div className="flex items-center gap-4">
-                  <img
-                    src={playerProfile.portraitUrl ?? "/default-avatar.png"}
-                    alt="Profile"
-                    className="w-10 h-10 rounded-full object-cover border border-border"
-                  />
-                  <div className="leading-tight">
-                    <div className="text-sm font-semibold">{playerProfile.name}</div>
-                    <div className="text-xs text-muted-foreground">Lv {playerProfile.level} • {playerProfile.rankTitle}</div>
-                  </div>
+                  <PlayerProfileHeader profile={playerProfile} />
                 </div>
 
-                {/* Center: top taps / status (no large images) */}
+                {/* Center: top taps / status */}
                 <div className="flex-1 flex items-center justify-center">
                   <TapStatusCard />
                 </div>
 
-                {/* Right: connect / buy etc (NO commander here) */}
+                {/* Right: connect / buy etc */}
                 <div className="flex items-start gap-1">
                   <ResourceDisplay seasonResourceAmount={seasonProgress} auronCount={playerProfile.auron ?? 0} />
                   <div className="flex flex-col items-start gap-1 ml-1 pl-1 border-l border-border">
                     {/* wallet / buy buttons */}
-                    <ConnectButton.Custom>
-                      {({
-                        account,
-                        chain,
-                        openAccountModal,
-                        openChainModal,
-                        openConnectModal,
-                        authenticationStatus,
-                        mounted,
-                      }) => {
-                        const ready = mounted && authenticationStatus !== "loading";
-                        const connected =
-                          ready &&
-                          account &&
-                          chain &&
-                          (!authenticationStatus || authenticationStatus === "authenticated");
-
-                        useEffect(() => {
-                          if (connected && account?.address && !playerProfile.isWalletConnected) {
-                            connectWallet(account.address);
-                          }
-                        }, [connected, account?.address, connectWallet, playerProfile.isWalletConnected]);
-
-                        return (
-                          <div
-                            {...(!ready && {
-                              "aria-hidden": true,
-                              style: { opacity: 0, pointerEvents: "none", userSelect: "none" },
-                            })}
-                          >
-                            {(() => {
-                              if (!connected) {
-                                return (
-                                  <Button
-                                    onClick={openConnectModal}
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs px-2 h-7 w-full justify-start"
-                                  >
-                                    <Wallet className="mr-1.5 h-3 w-3 text-bright-gold" /> Connect
-                                  </Button>
-                                );
-                              }
-
-                              if (chain?.unsupported) {
-                                return (
-                                  <Button onClick={openChainModal} type="button" variant="destructive" size="sm" className="whitespace-nowrap text-xs px-2 h-7 w-full justify-start">
-                                    Wrong network
-                                  </Button>
-                                );
-                              }
-
-                              return (
-                                <div className="flex gap-x-1">
-                                  <Button onClick={openChainModal} type="button" size="sm" variant="outline" className="text-xs px-2 h-7">
-                                    {chain.hasIcon && (
-                                      <div style={{ background: chain.iconBackground, width: 12, height: 12, borderRadius: 999, overflow: "hidden", marginRight: 4 }}>
-                                        {chain.iconUrl && <img alt={chain.name ?? "Chain icon"} src={chain.iconUrl} style={{ width: 12, height: 12 }} />}
-                                      </div>
-                                    )}
-                                    {chain.name}
-                                  </Button>
-                                  <Button onClick={openAccountModal} type="button" size="sm" variant="outline" className="text-xs px-2 h-7">
-                                    {account.displayName}
-                                  </Button>
-                                </div>
-                              );
-                            })()}
-                          </div>
-                        );
-                      }}
-                    </ConnectButton.Custom>
-
-                    <Button asChild variant="outline" size="sm" className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs px-2 h-7 w-full justify-start">
-                      <Link href="/marketplace">
-                        <CreditCard className="mr-1.5 h-3 w-3" /> Buy
-                      </Link>
-                    </Button>
+                    <ConnectButton />
                   </div>
                 </div>
               </div>
             </header>
 
-            {/* TAP AREA: commander full-body centered, ArkForge on the left, buttons on the right */}
-            <section id="tap-area" className="w-full mt-4">
-              <div className="w-full max-w-7xl mx-auto relative" style={{ minHeight: "62vh" }}>
-                <div className="flex items-center justify-center w-full h-full">
-                  <CommanderCenter
-                    fullBodyUrl={
-                      playerProfile.avatarUrl ??
-                      (playerProfile.commanderSex === "female" ? "/images/commander-woman-full.png" : "/images/commander-man-full.png")
-                    }
-                    avatarUrl={playerProfile.avatarUrl}
-                    showHalo={true}
-                    onAvatarClick={() => setCommanderModalOpen(true)}
-                    // leftPanel/rightPanel are positioned at the character's hands using CommanderCenter's internal calculation
-                      leftPanel={<ArkForgePanel countdown={"03:12:45"} />}
-                      rightPanel={<RightSideButtons />}
-                    // adjust these if the hand anchors don't match the panels (values between 0 and 1)
-                    handLeftX={0.16}
-                    handRightX={0.82}
-                    handY={0.62}
-                    className="bg-transparent"
-                    onTap={() => { /* registerTap?.() */ }}
-                  />
-                </div>
-              </div>
-            </section>
-
-            {/* Main content below tap area */}
-            <section className="px-4 md:px-6 lg:px-8">{children}</section>
+            {/* MAIN / TAP AREA */}
+            <main className="flex-grow overflow-y-auto pb-[56px] md:pb-0 flex flex-col">
+              {children}
+            </main>
 
             <CoreDisplay />
             <LiveDashboard />
@@ -239,49 +132,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           </div>
         </div>
       </div>
-
-      {/* Commander modal (profile controls - portrait OK here) */}
-      {commanderModalOpen && playerProfile && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/50 p-4">
-          <div className="max-w-lg w-full">
-            <Card>
-              <CardContent className="flex flex-col gap-4">
-                <div className="flex items-center gap-4">
-                  <img src={playerProfile.portraitUrl ?? playerProfile.avatarUrl ?? "/default-avatar.png"} alt="Profile" className="w-20 h-20 rounded-full object-cover border-2" />
-                  <div>
-                    <h3 className="text-lg font-semibold">{playerProfile.name}</h3>
-                    <p className="text-sm text-muted-foreground">Level {playerProfile.level} • {playerProfile.rankTitle}</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-card/40 p-3 rounded-md text-center">
-                    <div className="text-xs text-muted-foreground">Points</div>
-                    <div className="text-lg font-bold">{playerProfile.points.toLocaleString()}</div>
-                  </div>
-                  <div className="bg-card/40 p-3 rounded-md text-center">
-                    <div className="text-xs text-muted-foreground">Auron</div>
-                    <div className="text-lg font-bold">{playerProfile.auron?.toLocaleString() ?? 0}</div>
-                  </div>
-                  <div className="bg-card/40 p-3 rounded-md text-center">
-                    <div className="text-xs text-muted-foreground">Taps</div>
-                    <div className="text-lg font-bold">{playerProfile.currentTaps}/{playerProfile.maxTaps}</div>
-                  </div>
-                  <div className="bg-card/40 p-3 rounded-md text-center">
-                    <div className="text-xs text-muted-foreground">Battle Pass</div>
-                    <div className="text-lg font-bold">Lv {playerProfile.battlePassLevel}</div>
-                  </div>
-                </div>
-
-                <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setCommanderModalOpen(false)}>Close</Button>
-                  <Button onClick={() => { setCommanderModalOpen(false); }}>Manage</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      )}
     </>
   );
 };
