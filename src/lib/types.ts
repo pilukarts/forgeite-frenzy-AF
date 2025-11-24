@@ -3,13 +3,14 @@ import type { LucideIcon } from 'lucide-react';
 export type LeagueName = 'Bronze' | 'Silver' | 'Gold' | 'Platinum' | 'Diamond' | 'Master' | 'Grandmaster';
 
 // Battle Pass Types
-export type RewardType = 'points' | 'auron' | 'title';
+export type RewardType = 'points' | 'auron' | 'title' | 'boost' | 'cosmetic';
 
 export interface BattlePassReward {
+  id?: string;
   type: RewardType;
   amount?: number; // for points and auron
   name?: string; // for title
-  icon: LucideIcon;
+  icon?: LucideIcon;
 }
 
 export interface BattlePassLevel {

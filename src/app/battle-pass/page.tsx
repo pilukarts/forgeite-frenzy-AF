@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-import { Sparkles, Swords, Check, Lock, Gift } from 'lucide-react';
+import { Sparkles, Swords, Check, Lock, Gift, Coins, Star } from 'lucide-react';
 import type { BattlePassReward } from '@/lib/types';
 
 
@@ -27,7 +27,7 @@ const RewardCard: React.FC<{
   }
 
   const canClaim = isUnlocked && !isClaimed && (track === 'free' || hasPremium);
-  const Icon = reward.icon;
+  const Icon = reward.icon || (reward.type === 'points' ? Coins : reward.type === 'auron' ? Star : Gift);
 
   return (
     <Card className={cn(

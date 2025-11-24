@@ -50,7 +50,7 @@ const ProfilePage: React.FC = () => {
         });
       return;
     }
-    updatePlayerProfile(name.trim(), selectedPortraitUrl);
+    updatePlayerProfile({ name: name.trim(), portraitUrl: selectedPortraitUrl });
   };
 
 

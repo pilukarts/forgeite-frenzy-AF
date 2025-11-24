@@ -51,7 +51,7 @@ const TransparencyStatementPage: React.FC = () => {
                 <p>
                   <strong>Definition:</strong> NFTs are unique digital identifiers recorded on a blockchain,
                   used to certify ownership of a specific digital asset. In Alliance Forge,
-                  NFTs may represent items such as the "Founder's Ark" or other unique collectibles.
+                  NFTs may represent items such as the &quot;Founder&apos;s Ark&quot; or other unique collectibles.
                 </p>
                 <p>
                   <strong>Acquisition:</strong> NFTs within Alliance Forge are earned through significant
@@ -85,7 +85,7 @@ const TransparencyStatementPage: React.FC = () => {
                   <strong>Auron (Premium In-Game Currency):</strong> Auron is an in-game virtual currency
                   used to purchase premium items, boosts, or cosmetic content in Alliance Forge.
                   Auron is primarily acquired by connecting a crypto wallet or through direct purchases.
-                  Auron is an internal virtual currency and is NOT a cryptocurrency. It exists only within the game's ecosystem.
+                  Auron is an internal virtual currency and is NOT a cryptocurrency. It exists only within the game&apos;s ecosystem.
                 </p>
                 <p>
                   <strong>Points (Standard In-Game Currency):</strong> Points are the primary currency earned
@@ -94,7 +94,7 @@ const TransparencyStatementPage: React.FC = () => {
                 </p>
                 <p>
                   <strong>Future Cryptocurrency Token:</strong> Alliance Forge plans to introduce its own cryptocurrency token in the future.
-                  Details about such a token, including its utility, economics (tokenomics), and distribution (e.g., airdrop mechanics based on "Founder's Score"),
+                  Details about such a token, including its utility, economics (tokenomics), and distribution (e.g., airdrop mechanics based on &quot;Founder&apos;s Score&quot;),
                   will be provided in a separate whitepaper or official announcement. Treat any claims of an existing Alliance Forge token outside of official announcements with extreme caution.
                 </p>
               </CardContent>

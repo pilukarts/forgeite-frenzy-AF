@@ -74,7 +74,7 @@ const UpgradesPage: React.FC = () => {
           {playerProfile.isWalletConnected && (
             <section className="mb-6 sm:mb-8"> {/* Adjusted margin */}
               <h2 className="text-xl sm:text-2xl font-headline text-accent mb-2 sm:mb-3">Ark Hangar</h2> {/* Adjusted text size, margin */}
-               <CardDescription className="text-sm text-muted-foreground mb-2 sm:mb-3">Upgrade your StarForge Ark. Fully upgrade to earn the exclusive Founder's Ark NFT!</CardDescription> {/* Adjusted text size, margin */}
+               <CardDescription className="text-sm text-muted-foreground mb-2 sm:mb-3">Upgrade your StarForge Ark. Fully upgrade to earn the exclusive Founder&apos;s Ark NFT!</CardDescription> {/* Adjusted text size, margin */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4"> {/* Adjusted gap */}
                 {arkUpgrades.map(arkUpgrade => {
                   const isPurchased = !!playerProfile.upgrades[arkUpgrade.id];

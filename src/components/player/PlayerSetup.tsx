@@ -1,27 +1,12 @@
+"use client";
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import CommanderSelection from '@/components/game/CommanderSelection';
-import { AVAILABLE_COMMANDERS } from '@/components/game/CommanderSelection';
-
-interface PlayerSetupProps {
-  onPlayerReady: (playerData: PlayerData) => void;
-  className?: string;
-}
-
-export interface PlayerData {
-  name: string;
-  commanderId: string;
-  level: number;
-  rank: string;
-  experience: number;
-  experienceToNext: number;
-  points: number;
-  totalPoints: number;
-  achievements: string[];
-}
+import CommanderSelection, { Commander, AVAILABLE_COMMANDERS } from '@/components/game/CommanderSelection';
+import { useGame, PlayerProfile } from '@/contexts/GameContext';
 
 const INITIAL_RANKS = [
   { name: 'Recluta', minLevel: 1, color: 'text-gray-400' },
@@ -34,10 +19,11 @@ const INITIAL_RANKS = [
   { name: 'Maestro', minLevel: 75, color: 'text-pink-400' }
 ];
 
-export default function PlayerSetup({ onPlayerReady, className = "" }: PlayerSetupProps) {
+export default function PlayerSetup() {
+  const { completeInitialSetup } = useGame();
   const [step, setStep] = useState<'name' | 'commander'>('name');
   const [playerName, setPlayerName] = useState('');
-  const [selectedCommander, setSelectedCommander] = useState<string>('');
+  const [selectedCommander, setSelectedCommander] = useState<Commander | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleNameSubmit = () => {
@@ -46,27 +32,49 @@ export default function PlayerSetup({ onPlayerReady, className = "" }: PlayerSet
     }
   };
 
-  const handleCommanderSelect = async (commanderId: string) => {
-    setSelectedCommander(commanderId);
+  const handleCommanderSelect = async (commander: Commander) => {
+    setSelectedCommander(commander);
     
-    // Simular carga
+    // Simulate loading
     setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Crear datos iniciales del jugador
-    const playerData: PlayerData = {
+    // Create initial player profile
+    const playerProfile: PlayerProfile = {
+      id: Date.now().toString(),
       name: playerName.trim(),
-      commanderId,
+      commanderId: commander.id,
+      commanderSex: 'male',
+      portraitUrl: '/images/global/commander-man-full.png',
       level: 1,
       rank: INITIAL_RANKS[0].name,
       experience: 0,
       experienceToNext: 100,
       points: 0,
       totalPoints: 0,
-      achievements: ['Bienvenido al Cyber Concord']
+      pointsPerTap: 1,
+      achievements: ['Bienvenido al Cyber Concord'],
+      isWalletConnected: false,
+      isTelegramWalletConnected: false,
+      auron: 0,
+      currentTaps: 100,
+      maxTaps: 100,
+      tapsAvailableAt: 0,
+      upgrades: {},
+      seasonProgress: {},
+      activeDailyQuests: [],
+      activeTapBonuses: [],
+      battlePassLevel: 1,
+      battlePassXp: 0,
+      xpToNextBattlePassLevel: 1000,
+      hasPremiumPass: false,
+      claimedBattlePassRewards: {},
+      currentTierColor: 'cyan',
+      coreVoiceProtocol: 'standard',
+      referralCode: `REF-${Date.now().toString(36).toUpperCase()}`
     };
     
-    onPlayerReady(playerData);
+    completeInitialSetup(playerProfile);
   };
 
   const handleNameKeyPress = (e: React.KeyboardEvent) => {
@@ -77,7 +85,7 @@ export default function PlayerSetup({ onPlayerReady, className = "" }: PlayerSet
 
   if (step === 'name') {
     return (
-      <div className={`max-w-md mx-auto ${className}`}>
+      <div className="max-w-md mx-auto p-4">
         <Card className="bg-gradient-to-br from-blue-900 to-purple-900 border-blue-600">
           <CardHeader className="text-center space-y-2">
             <CardTitle className="text-2xl text-white">Forgenite Frenzy</CardTitle>
@@ -112,7 +120,7 @@ export default function PlayerSetup({ onPlayerReady, className = "" }: PlayerSet
           </CardContent>
         </Card>
         
-        {/* Información del juego */}
+        {/* Game info */}
         <Card className="mt-6 bg-gray-900 border-gray-700">
           <CardContent className="p-4">
             <div className="text-center space-y-2">
@@ -129,7 +137,7 @@ export default function PlayerSetup({ onPlayerReady, className = "" }: PlayerSet
 
   if (step === 'commander') {
     return (
-      <div className={`space-y-6 ${className}`}>
+      <div className="space-y-6 p-4">
         <Card className="bg-gradient-to-r from-purple-900 to-blue-900 border-purple-600">
           <CardContent className="p-6">
             <div className="text-center space-y-2">
@@ -142,6 +150,7 @@ export default function PlayerSetup({ onPlayerReady, className = "" }: PlayerSet
         <CommanderSelection
           selectedCommander={selectedCommander}
           onCommanderSelect={handleCommanderSelect}
+          currentLevel={1}
         />
         
         {isLoading && (

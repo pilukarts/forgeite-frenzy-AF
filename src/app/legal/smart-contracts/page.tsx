@@ -35,25 +35,25 @@ const SmartContractsPage: React.FC = () => {
                   A smart contract is a self-executing program with the terms of the agreement between parties directly written into code. The code and the agreements contained therein exist across a decentralized blockchain network. Smart contracts permit trusted transactions and agreements to be carried out among disparate, anonymous parties without the need for a central authority, legal system, or external enforcement mechanism.
                 </p>
                 <p>
-                  In Alliance Forge, we use them to ensure ownership of unique assets, like the <strong>Founder's Ark NFT</strong>, is verifiable, immutable, and truly in the player's hands.
+                  In Alliance Forge, we use them to ensure ownership of unique assets, like the <strong>Founder&apos;s Ark NFT</strong>, is verifiable, immutable, and truly in the player&apos;s hands.
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Founder's Ark Contract (AFS-ARK)</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl font-headline text-accent">Founder&apos;s Ark Contract (AFS-ARK)</CardTitle>
                 <CardDescription>
-                  This contract governs the minting (creation) and ownership of the Founder's Ark NFTs.
+                  This contract governs the minting (creation) and ownership of the Founder&apos;s Ark NFTs.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
                 <p><strong>Standard:</strong> ERC-721 (Non-Fungible Token Standard)</p>
                 <p><strong>Key Functionality:</strong></p>
                 <ul className="list-disc pl-5 space-y-1">
-                    <li><strong>Secure Minting:</strong> Only players who have fully upgraded their Ark Hangar in-game can mint a Founder's Ark NFT. This action is initiated by the player and verified by the contract.</li>
+                    <li><strong>Secure Minting:</strong> Only players who have fully upgraded their Ark Hangar in-game can mint a Founder&apos;s Ark NFT. This action is initiated by the player and verified by the contract.</li>
                     <li><strong>Verifiable Ownership:</strong> Each NFT has a unique owner recorded on the blockchain. You can prove your ownership at any time without relying on our servers.</li>
-                    <li><strong>Transferability:</strong> As the owner, you have the freedom to sell, trade, or transfer your Founder's Ark on any compatible NFT marketplace.</li>
+                    <li><strong>Transferability:</strong> As the owner, you have the freedom to sell, trade, or transfer your Founder&apos;s Ark on any compatible NFT marketplace.</li>
                 </ul>
               </CardContent>
               <CardFooter>
@@ -72,7 +72,7 @@ const SmartContractsPage: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <p>
-                  By publishing our smart contract addresses, we offer full transparency. Anyone can audit the code to verify that the game's rules are fair and are enforced as promised. This is our commitment to building an open and trustworthy gaming ecosystem. For more details, please see our{' '}
+                  By publishing our smart contract addresses, we offer full transparency. Anyone can audit the code to verify that the game&apos;s rules are fair and are enforced as promised. This is our commitment to building an open and trustworthy gaming ecosystem. For more details, please see our{' '}
                   <Link href="/legal/transparency-statement" className="text-primary hover:underline">
                     Transparency Statement
                   </Link>.
