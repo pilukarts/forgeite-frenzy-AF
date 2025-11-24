@@ -29,7 +29,7 @@ const TermsOfServicePage: React.FC = () => {
               </CardHeader>
               <CardContent className="space-y-2">
                 <p>
-                  These Terms of Service ("Terms") constitute a legally binding agreement made between you ("you" or "User") and [Your Company/Studio] ("we," "us," or "our") concerning your access to and use of the Alliance Forge game ("Game"). By accessing, playing, or registering for our Game, you agree to be bound by these Terms and our{' '}
+                  These Terms of Service (&quot;Terms&quot;) constitute a legally binding agreement made between you (&quot;you&quot; or &quot;User&quot;) and [Your Company/Studio] (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) concerning your access to and use of the Alliance Forge game (&quot;Game&quot;). By accessing, playing, or registering for our Game, you agree to be bound by these Terms and our{' '}
                   <Link href="/legal/transparency-statement" className="text-primary hover:underline">
                     Transparency Statement
                   </Link>. If you do not agree with these Terms, you must not use the Game.
@@ -68,8 +68,8 @@ const TermsOfServicePage: React.FC = () => {
                 <ul className="list-disc pl-5 space-y-1">
                     <li>Use language or share content that is unlawful, abusive, hateful, or discriminatory.</li>
                     <li>Impersonate another player, a staff member, or any other person.</li>
-                    <li>Disrupt the game or servers, or negatively affect other players' experiences.</li>
-                    <li>Engage in "real money trading" (RMT) of virtual goods or accounts outside of authorized NFT marketplace platforms.</li>
+                    <li>Disrupt the game or servers, or negatively affect other players&apos; experiences.</li>
+                    <li>Engage in &quot;real money trading&quot; (RMT) of virtual goods or accounts outside of authorized NFT marketplace platforms.</li>
                 </ul>
               </CardContent>
             </Card>
@@ -90,7 +90,7 @@ const TermsOfServicePage: React.FC = () => {
                 <CardTitle className="text-xl sm:text-2xl font-headline text-accent">6. Disclaimers and Limitation of Liability</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <p>THE GAME IS PROVIDED "AS IS." WE MAKE NO WARRANTIES OF ANY KIND. TO THE FULLEST EXTENT PERMITTED BY LAW, WE WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES.</p>
+                <p>THE GAME IS PROVIDED &quot;AS IS.&quot; WE MAKE NO WARRANTIES OF ANY KIND. TO THE FULLEST EXTENT PERMITTED BY LAW, WE WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES.</p>
                 <p>The value of blockchain assets (NFTs, cryptocurrencies) is volatile. We are not responsible for any financial losses.</p>
               </CardContent>
             </Card>

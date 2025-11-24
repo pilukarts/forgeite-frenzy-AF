@@ -85,7 +85,7 @@ const CommanderOrderBanner: React.FC<CommanderOrderProps> = ({ order, onClaim, o
                     <span className="sr-only">Hide Order</span>
                 </Button>
 
-                <h4 className="font-headline text-primary text-base sm:text-lg mt-4">Commander's Orders</h4>
+                <h4 className="font-headline text-primary text-base sm:text-lg mt-4">Commander&apos;s Orders</h4>
                 <p className="text-sm text-foreground/90 leading-tight px-2">
                     {missionText}
                 </p>

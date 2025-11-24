@@ -28,7 +28,7 @@ const NftsPage: React.FC = () => {
         <header className="mb-4 sm:mb-6">
           <h1 className="text-2xl sm:text-3xl font-headline text-primary flex items-center">
             <GalleryHorizontal className="mr-3 h-7 w-7" />
-            Founder's Ark NFTs
+            Founder&apos;s Ark NFTs
           </h1>
           <p className="text-base text-muted-foreground mt-1">
             Own a piece of the Alliance. These exclusive, limited-edition ship blueprints offer unique in-game perks and true digital ownership.

@@ -23,7 +23,7 @@ const PreIntroScreen: React.FC<PreIntroScreenProps> = ({ onCompletion }) => {
           <CardHeader>
             <CardTitle className="text-center font-headline text-3xl text-primary">Mission Briefing</CardTitle>
             <CardDescription className="text-center text-muted-foreground pt-2 text-base">
-              Humanity's fate rests on your shoulders, Commander. The Cyber Concord approaches. We must evacuate Earth. Prepare your command profile.
+              Humanity&apos;s fate rests on your shoulders, Commander. The Cyber Concord approaches. We must evacuate Earth. Prepare your command profile.
             </CardDescription>
           </CardHeader>
           <CardFooter className="flex-col">

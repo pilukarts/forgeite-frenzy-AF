@@ -80,6 +80,106 @@ const TapStatusCard: React.FC = () => {
     );
 }
 
+interface WalletButtonProps {
+  account: {
+    address: string;
+    displayName: string;
+  } | undefined;
+  chain: {
+    hasIcon: boolean;
+    iconBackground?: string;
+    iconUrl?: string;
+    name?: string;
+    unsupported?: boolean;
+  } | undefined;
+  openAccountModal: () => void;
+  openChainModal: () => void;
+  openConnectModal: () => void;
+  authenticationStatus?: 'loading' | 'unauthenticated' | 'authenticated';
+  mounted: boolean;
+  playerProfileIsWalletConnected: boolean;
+  connectWallet: (address: string) => void;
+}
+
+const WalletButton: React.FC<WalletButtonProps> = ({
+  account,
+  chain,
+  openAccountModal,
+  openChainModal,
+  openConnectModal,
+  authenticationStatus,
+  mounted,
+  playerProfileIsWalletConnected,
+  connectWallet,
+}) => {
+  const ready = mounted && authenticationStatus !== 'loading';
+  const connected =
+    ready &&
+    account &&
+    chain &&
+    (!authenticationStatus ||
+      authenticationStatus === 'authenticated');
+
+  useEffect(() => {
+    if (connected && account?.address && !playerProfileIsWalletConnected) {
+      connectWallet(account.address);
+    }
+  }, [connected, account?.address, connectWallet, playerProfileIsWalletConnected]);
+
+  return (
+    <div
+      {...(!ready && {
+        'aria-hidden': true,
+        'style': {
+          opacity: 0,
+          pointerEvents: 'none',
+          userSelect: 'none',
+        },
+      })}
+    >
+      {(() => {
+        if (!connected) {
+          return (
+            <Button 
+              onClick={openConnectModal}
+              type="button"
+              variant="outline" 
+              size="sm" 
+              className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs px-2 h-7 w-full justify-start"
+            >
+              <Wallet className="mr-1.5 h-3 w-3 text-bright-gold" /> Connect
+            </Button>
+          );
+        }
+        
+        if (chain?.unsupported) {
+          return (
+            <Button onClick={openChainModal} type="button" variant="destructive" size="sm" className="whitespace-nowrap text-xs px-2 h-7 w-full justify-start">
+              Wrong network
+            </Button>
+          );
+        }
+
+        return (
+          <div className="flex gap-x-1">
+            <Button onClick={openChainModal} type="button" size="sm" variant="outline" className="text-xs px-2 h-7">
+              {chain.hasIcon && (
+                <div style={{ background: chain.iconBackground, width: 12, height: 12, borderRadius: 999, overflow: 'hidden', marginRight: 4, }} >
+                  {chain.iconUrl && ( <img alt={chain.name ?? 'Chain icon'} src={chain.iconUrl} style={{ width: 12, height: 12 }} /> )}
+                </div>
+              )}
+              {chain.name}
+            </Button>
+            <Button onClick={openAccountModal} type="button" size="sm" variant="outline" className="text-xs px-2 h-7">
+              {account.displayName}
+            </Button>
+          </div>
+        )
+      })()}
+    </div>
+  );
+};
+
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const { playerProfile, connectWallet, currentSeason, isLoading, isInitialSetupDone, completeInitialSetup } = useGame();
   
@@ -125,74 +225,19 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                         openConnectModal,
                         authenticationStatus,
                         mounted,
-                      }) => {
-                        const ready = mounted && authenticationStatus !== 'loading';
-                        const connected =
-                          ready &&
-                          account &&
-                          chain &&
-                          (!authenticationStatus ||
-                            authenticationStatus === 'authenticated');
-
-                        useEffect(() => {
-                            if (connected && account?.address && !playerProfile.isWalletConnected) {
-                                connectWallet(account.address);
-                            }
-                        }, [connected, account?.address, connectWallet, playerProfile.isWalletConnected]);
-
-                        return (
-                          <div
-                            {...(!ready && {
-                              'aria-hidden': true,
-                              'style': {
-                                opacity: 0,
-                                pointerEvents: 'none',
-                                userSelect: 'none',
-                              },
-                            })}
-                          >
-                            {(() => {
-                              if (!connected) {
-                                return (
-                                  <Button 
-                                    onClick={openConnectModal}
-                                    type="button"
-                                    variant="outline" 
-                                    size="sm" 
-                                    className="bg-primary/20 border-primary text-primary-foreground hover:bg-primary/30 whitespace-nowrap text-xs px-2 h-7 w-full justify-start"
-                                  >
-                                    <Wallet className="mr-1.5 h-3 w-3 text-bright-gold" /> Connect
-                                  </Button>
-                                );
-                              }
-                              
-                              if (chain?.unsupported) {
-                                return (
-                                    <Button onClick={openChainModal} type="button" variant="destructive" size="sm" className="whitespace-nowrap text-xs px-2 h-7 w-full justify-start">
-                                      Wrong network
-                                    </Button>
-                                );
-                              }
-
-                              return (
-                                <div className="flex gap-x-1">
-                                    <Button onClick={openChainModal} type="button" size="sm" variant="outline" className="text-xs px-2 h-7">
-                                        {chain.hasIcon && (
-                                            <div style={{ background: chain.iconBackground, width: 12, height: 12, borderRadius: 999, overflow: 'hidden', marginRight: 4, }} >
-                                                {chain.iconUrl && ( <img alt={chain.name ?? 'Chain icon'} src={chain.iconUrl} style={{ width: 12, height: 12 }} /> )}
-                                            </div>
-                                        )}
-                                         {chain.name}
-                                    </Button>
-                                     <Button onClick={openAccountModal} type="button" size="sm" variant="outline" className="text-xs px-2 h-7">
-                                        {account.displayName}
-                                     </Button>
-                                </div>
-                              )
-                            })()}
-                          </div>
-                        );
-                      }}
+                      }) => (
+                        <WalletButton
+                          account={account}
+                          chain={chain}
+                          openAccountModal={openAccountModal}
+                          openChainModal={openChainModal}
+                          openConnectModal={openConnectModal}
+                          authenticationStatus={authenticationStatus}
+                          mounted={mounted}
+                          playerProfileIsWalletConnected={playerProfile.isWalletConnected}
+                          connectWallet={connectWallet}
+                        />
+                      )}
                     </ConnectButton.Custom>
                     <Button asChild
                         variant="outline" 
