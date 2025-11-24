@@ -17,6 +17,8 @@ import LiveDashboard from "@/components/game/LiveDashboard";
 import CommanderCenter from "@/components/game/CommanderCenter";
 import ArkForgePanel from "@/components/game/ArkForgePanel";
 import RightSideButtons from "@/components/game/RightSideButtons";
+import PlayerProfileHeader from "../player/PlayerProfileHeader";
+
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -77,12 +79,7 @@ const TapStatusCard: React.FC = () => {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const { playerProfile, connectWallet, currentSeason, isLoading, isInitialSetupDone /*, registerTap? */ } = useGame();
-  const [commanderModalOpen, setCommanderModalOpen] = useState(false);
-
-  useEffect(() => {
-    if (!playerProfile) setCommanderModalOpen(false);
-  }, [playerProfile]);
-
+  
   if (isLoading) return <IntroScreen />;
   if (!isInitialSetupDone) return <PlayerSetup />;
   if (!playerProfile) return <IntroScreen />;
@@ -96,22 +93,23 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           <SidebarNav />
 
           <div className="flex flex-col flex-grow min-h-screen">
-            {/* HEADER: only links (no commander) - high z so it always sits above TapArea */}
+            {/* HEADER: Player info, resources, wallet connection */}
             <header
               className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50"
               aria-label="Top navigation"
             >
               <div className="flex items-center justify-between gap-2">
-                {/* Left: Placeholder or empty for balance */}
+                {/* Left: Player Profile Header - no commander image here */}
                 <div className="flex items-center gap-4 w-1/3">
+                   {/* PlayerProfileHeader is removed from here to avoid showing the commander */}
                 </div>
 
-                {/* Center: top taps / status (no imágenes grandes) */}
+                {/* Center: Tap status */}
                 <div className="flex-1 flex items-center justify-center">
                   <TapStatusCard />
                 </div>
 
-                {/* Right: connect / buy etc (NO comandante aquí) */}
+                {/* Right: Resources and Wallet */}
                 <div className="flex items-center justify-end gap-1 w-1/3">
                   <ResourceDisplay seasonResourceAmount={seasonProgress} auronCount={playerProfile.auron ?? 0} />
                    <div className="flex flex-col items-start gap-1 ml-1 pl-1 border-l border-border">
@@ -121,7 +119,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               </div>
             </header>
 
-            {/* MAIN: push content below header */}
+            {/* MAIN: Renders the page content (e.g., the centered commander) */}
             <main className="flex-grow overflow-y-auto pb-14 flex flex-col">
               {children}
             </main>

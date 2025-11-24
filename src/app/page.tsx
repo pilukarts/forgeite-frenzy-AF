@@ -309,7 +309,7 @@ export default function HomePage() {
         ))}
       </AnimatePresence>
 
-      <div className="relative h-screen w-full overflow-hidden">
+      <div className="relative h-full w-full overflow-hidden flex flex-col items-center justify-center">
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed"
           style={{ 
@@ -341,7 +341,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        <div className="relative h-full flex flex-col items-center justify-center p-4">
+        <div className="relative h-full w-full flex flex-col items-center justify-center p-4">
           
           <motion.div 
             className="absolute top-4 left-4 flex flex-col gap-2"
@@ -380,7 +380,7 @@ export default function HomePage() {
 
           <motion.div
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
-              style={{ width: 'clamp(180px, 35vw, 280px)', height: 'auto' }} // Adjusted size
+              style={{ width: 'clamp(220px, 40vw, 320px)', height: 'auto' }} // Adjusted size for full body
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
@@ -402,3 +402,4 @@ export default function HomePage() {
     </>
   );
 }
+
