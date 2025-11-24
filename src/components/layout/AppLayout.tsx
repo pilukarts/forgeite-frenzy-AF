@@ -94,14 +94,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
           <div className="flex flex-col flex-grow min-h-screen">
             {/* HEADER: Player info, resources, wallet connection */}
-            <header
-              className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50"
-              aria-label="Top navigation"
-            >
+             <header className="sticky top-0 z-50 p-2 bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50">
               <div className="flex items-center justify-between gap-2">
                 {/* Left: Player Profile Header - no commander image here */}
                 <div className="flex items-center gap-4 w-1/3">
-                   {/* PlayerProfileHeader is removed from here to avoid showing the commander */}
+                   <PlayerProfileHeader profile={playerProfile} />
                 </div>
 
                 {/* Center: Tap status */}

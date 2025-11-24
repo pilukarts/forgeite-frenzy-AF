@@ -37,7 +37,7 @@ const PlayerProfileHeader: React.FC<PlayerProfileHeaderProps> = ({ profile, comp
 
   return (
     <ProfileWrapper>
-      <Avatar className={compact ? "h-8 w-8 border-2 border-primary" : "h-10 w-10 border-2 border-primary"}>
+      <Avatar className={cn("border-2 border-primary", compact ? "h-8 w-8" : "h-10 w-10")}>
         <AvatarImage src={avatarSrc} alt={profile.name} data-ai-hint={dataAiHint} />
         <AvatarFallback>{profile.name ? profile.name.substring(0, 1).toUpperCase() : <UserCircle className="h-5 w-5" />}</AvatarFallback>
       </Avatar>

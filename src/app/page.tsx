@@ -22,179 +22,15 @@ import { Card, CardContent } from '@/components/ui/card';
 import IntroScreen from '@/components/intro/IntroScreen';
 import images from '@/lib/placeholder-images.json';
 import Link from 'next/link';
+import CommanderCenter from '@/components/game/CommanderCenter';
+import ArkForgePanel from '@/components/game/ArkForgePanel';
+import RightSideButtons from '@/components/game/RightSideButtons';
 
 // Image configuration
 const IMAGE_PATHS = {
   ark: images.ark.ark,
   background: images.global.main_scene
 };
-
-// ULTRA VIBRANT HOLOGRAPHIC BUTTON
-const HolographicButton = ({ 
-  children, 
-  onClick, 
-  icon: Icon, 
-  color = "blue", 
-  className = "",
-  size = "default",
-  floating = false,
-  asChild = false,
-  ...props
-}: {
-  children: React.ReactNode;
-  onClick?: () => void;
-  icon?: any;
-  color?: "blue" | "purple" | "green" | "orange" | "pink" | "gold" | "red" | "teal";
-  className?: string;
-  size?: "default" | "small" | "large";
-  floating?: boolean;
-  asChild?: boolean;
-  [key: string]: any;
-}) => {
-  const colors = {
-    blue: "from-blue-500/30 via-blue-600/30 to-purple-500/30 border-blue-400/70 hover:border-blue-300 shadow-blue-500/50",
-    purple: "from-purple-500/30 via-purple-600/30 to-pink-500/30 border-purple-400/70 hover:border-purple-300 shadow-purple-500/50",
-    green: "from-green-500/30 via-green-600/30 to-teal-500/30 border-green-400/70 hover:border-green-300 shadow-green-500/50",
-    orange: "from-orange-500/30 via-orange-600/30 to-red-500/30 border-orange-400/70 hover:border-orange-300 shadow-orange-500/50",
-    pink: "from-pink-500/30 via-pink-600/30 to-purple-500/30 border-pink-400/70 hover:border-pink-300 shadow-pink-500/50",
-    gold: "from-yellow-500/30 via-amber-500/30 to-orange-500/30 border-yellow-400/70 hover:border-yellow-300 shadow-yellow-500/50",
-    red: "from-red-500/30 via-red-600/30 to-pink-500/30 border-red-400/70 hover:border-red-300 shadow-red-500/50",
-    teal: "from-teal-500/30 via-teal-600/30 to-cyan-500/30 border-teal-400/70 hover:border-teal-300 shadow-teal-500/50"
-  };
-  
-  const sizes = {
-    small: "px-3 py-2 text-xs",
-    default: "px-4 py-3 text-sm",
-    large: "px-6 py-4 text-base"
-  };
-
-  const colorClass = colors[color] || colors.blue;
-  const sizeClass = sizes[size];
-  const Comp = asChild ? motion.div : motion.button;
-  
-  return (
-    <Comp
-      onClick={onClick}
-      whileHover={{ 
-        scale: 1.08,
-        y: floating ? -8 : -2,
-        rotate: floating ? [0, 2, -2, 0] : 0
-      }}
-      whileTap={{ scale: 0.92 }}
-      animate={{
-        y: floating ? [0, -5, 0] : 0,
-        rotate: floating ? [0, 1, -1, 0] : 0
-      }}
-      transition={{
-        y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-        rotate: { duration: 4, repeat: Infinity, ease: "easeInOut" }
-      }}
-      className={`
-        relative ${floating ? 'animate-pulse' : ''} ${sizeClass}
-        bg-gradient-to-br ${colorClass}
-        rounded-2xl backdrop-blur-xl border-2
-        shadow-2xl hover:shadow-[0_0_30px_rgba(59,130,246,0.8)]
-        transition-all duration-300 text-white font-bold
-        overflow-hidden group transform-gpu
-        flex items-center justify-center gap-2 z-10
-        ${floating ? 'shadow-lg shadow-primary/20' : ''}
-        ${className}
-      `}
-      {...props}
-    >
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-      <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/20 group-hover:from-white/15 transition-all duration-300" />
-      
-      {floating && (
-        <div className="absolute inset-0 pointer-events-none">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <motion.div
-              key={i}
-              className={`absolute w-1 h-1 bg-white/60 rounded-full`}
-              style={{
-                left: `${20 + i * 30}%`,
-                top: `${20 + i * 20}%`,
-              }}
-              animate={{
-                y: [0, -20, 0],
-                opacity: [0.6, 1, 0.6],
-                scale: [1, 1.5, 1],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                delay: i * 0.3,
-              }}
-            />
-          ))}
-        </div>
-      )}
-      
-      {Icon && <Icon className={`${size === 'large' ? 'h-6 w-6' : size === 'small' ? 'h-3 w-3' : 'h-4 w-4'}`} />}
-      <span className={`${size === 'small' ? 'text-xs' : size === 'large' ? 'text-base' : 'text-sm'} font-bold`}>
-        {children}
-      </span>
-    </Comp>
-  );
-};
-
-// ENHANCED ARK COMPONENT
-const EnhancedArk = ({ onTap, timeLeft, tapCount }: any) => (
-  <motion.div 
-    initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
-    animate={{ opacity: 1, scale: 1, rotate: 0 }}
-    className="relative cursor-pointer group"
-    onClick={onTap}
-    whileHover={{ scale: 1.05, rotate: 2 }}
-    whileTap={{ scale: 0.95 }}
-  >
-    <div className={`
-      relative overflow-hidden
-      bg-gradient-to-br from-indigo-500/30 via-purple-500/30 to-pink-500/30 backdrop-blur-xl
-      border-2 border-indigo-400/80 hover:border-indigo-300/90
-      rounded-3xl shadow-2xl shadow-indigo-500/60 hover:shadow-indigo-500/80
-      transition-all duration-300 p-4 text-center group-hover:scale-105
-    `}>
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1500" />
-      <div className="absolute inset-0 bg-gradient-to-b from-indigo-400/20 via-transparent to-purple-600/20 animate-pulse" />
-      
-      <CardContent className="p-0 flex flex-col items-center space-y-3 relative z-10">
-        <div className="relative h-20 w-20">
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo-400/40 to-purple-500/40 rounded-full animate-pulse blur-xl" />
-          <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/30 rounded-full" />
-          <Image 
-            src={IMAGE_PATHS.ark}
-            alt="Ark-Forge" 
-            width={80}
-            height={80}
-            style={{objectFit: 'contain'}} 
-            unoptimized
-            className="drop-shadow-2xl filter brightness-125 contrast-110 animate-pulse"
-          />
-        </div>
-        
-        <div className="text-center">
-          <p className="text-sm font-bold text-white mb-1 drop-shadow-[0_0_10px_rgba(99,102,241,0.8)]">
-            ARK EVACUATION
-          </p>
-          <p className="text-xs text-indigo-200 font-bold drop-shadow-md">
-            {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m
-          </p>
-        </div>
-      </CardContent>
-      
-      {tapCount > 0 && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-2 py-0.5 rounded-full text-xs font-bold shadow-xl"
-        >
-          +{tapCount * 5} ⚡
-        </motion.div>
-      )}
-    </div>
-  </motion.div>
-);
 
 // ARK COUNTDOWN
 const ArkCountdown = () => {
@@ -225,7 +61,7 @@ const ArkCountdown = () => {
     return () => clearTimeout(timer);
   });
 
-  return timeLeft;
+  return `${timeLeft.days}d ${timeLeft.hours}h ${timeLeft.minutes}m`;
 };
 
 export default function HomePage() {
@@ -277,6 +113,16 @@ export default function HomePage() {
       toast({ title: "Referral Link Copied!", description: "Sharing failed, link copied instead." });
     }
   };
+
+  const rightButtons = [
+      { id: 'missions', label: 'Missions', href: '/quests' },
+      { id: 'rewards', label: 'Rewards', href: '/battle-pass' },
+      { id: 'community', label: 'Community', href: '/community' },
+      { id: 'alliance', label: 'Alliance', href: '/alliance-chat' },
+  ].map(item => ({...item, onClick: () => {
+      // This is a placeholder as navigation is handled by Link wrapper
+  }}));
+
 
   return (
     <>
@@ -341,65 +187,21 @@ export default function HomePage() {
           ))}
         </div>
 
-        <div className="relative h-full w-full flex flex-col items-center justify-center p-4">
-          
-          <motion.div 
-            className="absolute top-4 left-4 flex flex-col gap-2"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-          >
-            <HolographicButton 
-                onClick={toggleMusic} 
-                icon={isMusicPlaying ? Music : Music2}
-                color="purple"
-                size="small"
-            >
-                Sound
-            </HolographicButton>
-             <a href="https://allianceforge.online" target="_blank" rel="noopener noreferrer">
-                <HolographicButton icon={Globe} color="orange" size="small">Web</HolographicButton>
-            </a>
-            <a href="https://t.me/ForgeiteFrenzyGame_bot" target="_blank" rel="noopener noreferrer">
-                <HolographicButton icon={Bot} color="pink" size="small">App</HolographicButton>
-            </a>
-          </motion.div>
-
-          <motion.div 
-            className="absolute top-4 right-4 w-[120px]"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-          >
-            <EnhancedArk 
-              onTap={() => handleTapWithAnimation(true)}
-              timeLeft={timeLeft}
-              tapCount={tapCount}
-            />
-          </motion.div>
-
-          <motion.div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
-              style={{ width: 'clamp(220px, 40vw, 320px)', height: 'auto' }} // Adjusted size for full body
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-            >
-              <CommanderPortrait onTap={() => handleTapWithAnimation(false)} onLogoTap={() => handleTapWithAnimation(true)}/>
-          </motion.div>
-          
-          <motion.div
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center justify-center gap-2"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.5 }}
-          >
-              <HolographicButton onClick={toggleCommander} icon={Replace} color="purple" size="small">Change</HolographicButton>
-              <HolographicButton onClick={handleInviteClick} icon={Share2} color="pink" size="small">Invite</HolographicButton>
-          </motion.div>
-        </div>
+        <CommanderCenter
+            fullBodyUrl={playerProfile.avatarUrl}
+            showHalo={true}
+            onTap={() => handleTapWithAnimation(false)}
+            leftPanel={<ArkForgePanel countdown={timeLeft} />}
+            rightPanel={<RightSideButtons />}
+            bottomButtons={[
+                { id: "change", label: "Change", onClick: toggleCommander },
+                { id: "invite", label: "Invite", onClick: handleInviteClick },
+            ]}
+        />
+        
       </div>
     </>
   );
 }
+
 
