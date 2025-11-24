@@ -394,10 +394,6 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.5 }}
           >
-              <Link href="/quests" className="w-full"><HolographicButton icon={ListChecks} color="green" size="small" asChild>Missions</HolographicButton></Link>
-              <Link href="/battle-pass" className="w-full"><HolographicButton icon={Swords} color="gold" size="small" asChild>Rewards</HolographicButton></Link>
-              <Link href="/community" className="w-full"><HolographicButton icon={Users} color="teal" size="small" asChild>Community</HolographicButton></Link>
-              <Link href="/alliance-chat" className="w-full"><HolographicButton icon={MessageSquare} color="blue" size="small" asChild>Alliance</HolographicButton></Link>
               <HolographicButton onClick={toggleCommander} icon={Replace} color="purple" size="small">Change</HolographicButton>
               <HolographicButton onClick={handleInviteClick} icon={Share2} color="pink" size="small">Invite</HolographicButton>
           </motion.div>
@@ -406,5 +402,3 @@ export default function HomePage() {
     </>
   );
 }
-
-
