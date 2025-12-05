@@ -182,8 +182,8 @@ export default function HomePage() {
             fullBodyUrl={playerProfile.avatarUrl}
             showHalo={true}
             onTap={() => handleTapWithAnimation(false)}
-            leftPanel={<ArkForgePanel countdown={timeLeft} />}
-            rightPanel={<RightSideButtons />}
+            leftPanel={<RightSideButtons />}
+            rightPanel={<ArkForgePanel countdown={timeLeft} />}
             bottomButtons={[
                 { id: "change", label: "Change", onClick: toggleCommander },
                 { id: "invite", label: "Invite", onClick: handleInviteClick },
@@ -194,4 +194,3 @@ export default function HomePage() {
     </>
   );
 }
-
