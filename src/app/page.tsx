@@ -184,8 +184,8 @@ export default function HomePage() {
                 { id: "change", label: "Change", onClick: toggleCommander },
                 { id: "invite", label: "Invite", onClick: handleInviteClick },
             ]}
-            handLeftX={0.05}
-            handRightX={0.95}
+            handLeftX={-0.05}
+            handRightX={1.05}
         />
         
       </div>
