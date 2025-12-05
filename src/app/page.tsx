@@ -110,18 +110,9 @@ export default function HomePage() {
       }
     } catch (err) {
       await navigator.clipboard.writeText(referralLink);
-      toast({ title: "Referral Link Copied!", description: "Sharing failed, link copied instead." });
+      toast({ title: "Sharing failed, link copied instead." });
     }
   };
-
-  const rightButtons = [
-      { id: 'missions', label: 'Missions', href: '/quests' },
-      { id: 'rewards', label: 'Rewards', href: '/battle-pass' },
-      { id: 'community', label: 'Community', href: '/community' },
-      { id: 'alliance', label: 'Alliance', href: '/alliance-chat' },
-  ].map(item => ({...item, onClick: () => {
-      // This is a placeholder as navigation is handled by Link wrapper
-  }}));
 
 
   return (
@@ -203,5 +194,4 @@ export default function HomePage() {
     </>
   );
 }
-
 
