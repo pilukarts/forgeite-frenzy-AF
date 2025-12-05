@@ -7,7 +7,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import CommanderPortrait from '@/components/game/CommanderPortrait';
 import PlayerSetup from '@/components/player/PlayerSetup';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
@@ -18,7 +17,6 @@ import {
 } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card';
 import IntroScreen from '@/components/intro/IntroScreen';
 import images from '@/lib/placeholder-images.json';
 import Link from 'next/link';
@@ -71,8 +69,6 @@ export default function HomePage() {
     isInitialSetupDone, 
     handleTap, 
     toggleCommander, 
-    toggleMusic, 
-    isMusicPlaying 
   } = useGame();
   const { toast } = useToast();
   
@@ -182,7 +178,7 @@ export default function HomePage() {
             fullBodyUrl={playerProfile.avatarUrl}
             showHalo={true}
             onTap={() => handleTapWithAnimation(false)}
-            leftPanel={<ArkForgePanel countdown={timeLeft} />}
+            leftPanel={<RightSideButtons />}
             rightPanel={<ArkForgePanel countdown={timeLeft} />}
             bottomButtons={[
                 { id: "change", label: "Change", onClick: toggleCommander },
