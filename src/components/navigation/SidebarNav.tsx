@@ -16,18 +16,18 @@ import { Button } from '../ui/button';
 const mainNavItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/upgrades', label: 'Upgrades', icon: ChevronsUp },
-  { href: '/quests', label: 'Quests', icon: ListChecks },
-  { href: '/battle-pass', label: 'Pass', icon: Swords },
-  { href: '/level-map', label: 'Map', icon: Map },
+  { href: '/quests', label: 'Missions', icon: ListChecks },
+  { href: '/battle-pass', label: 'Rewards', icon: Swords },
+  { href: '/community', label: 'Community', icon: Users },
+  { href: '/alliance-chat', label: 'Alliance', icon: MessagesSquare },
   { href: '/leaderboard', label: 'Leaders', icon: Trophy },
   { href: '/marketplace', label: 'Shop', icon: ShoppingCart },
   { href: '/arcade', label: 'Arcade', icon: Gamepad2 },
-  { href: '/alliance-chat', label: 'Chat', icon: MessagesSquare },
+  { href: '/level-map', label: 'Map', icon: Map },
 ];
 
 const secondaryNavItems = [
   { href: '/nfts', label: 'NFTs', icon: GalleryHorizontal },
-  { href: '/community', label: 'Community', icon: Users },
   { href: '/support', label: 'Support', icon: LifeBuoy },
   { href: '/profile', label: 'Profile', icon: UserCircle },
   { href: '/legal/smart-contracts', label: 'Contracts', icon: FileText },
@@ -115,3 +115,5 @@ const SidebarNav: React.FC = () => {
 };
 
 export default SidebarNav;
+
+    

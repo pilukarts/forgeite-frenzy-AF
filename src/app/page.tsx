@@ -22,7 +22,6 @@ import images from '@/lib/placeholder-images.json';
 import Link from 'next/link';
 import CommanderCenter from '@/components/game/CommanderCenter';
 import ArkForgePanel from '@/components/game/ArkForgePanel';
-import RightSideButtons from '@/components/game/RightSideButtons';
 
 // Image configuration
 const IMAGE_PATHS = {
@@ -178,7 +177,6 @@ export default function HomePage() {
             fullBodyUrl={playerProfile.avatarUrl}
             showHalo={true}
             onTap={() => handleTapWithAnimation(false)}
-            leftPanel={<RightSideButtons />}
             rightPanel={<ArkForgePanel countdown={timeLeft} />}
             bottomButtons={[
                 { id: "change", label: "Change", onClick: toggleCommander },
@@ -192,3 +190,5 @@ export default function HomePage() {
     </>
   );
 }
+
+    
