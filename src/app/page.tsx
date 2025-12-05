@@ -22,6 +22,9 @@ import images from '@/lib/placeholder-images.json';
 import Link from 'next/link';
 import CommanderCenter from '@/components/game/CommanderCenter';
 import ArkForgePanel from '@/components/game/ArkForgePanel';
+import HolographicMenu from '@/components/game/HolographicMenu';
+import { useRouter } from 'next/navigation';
+
 
 // Image configuration
 const IMAGE_PATHS = {
@@ -70,6 +73,7 @@ export default function HomePage() {
     toggleCommander, 
   } = useGame();
   const { toast } = useToast();
+  const router = useRouter();
   
   const [tapCount, setTapCount] = useState(0);
   const timeLeft = ArkCountdown();
@@ -86,6 +90,9 @@ export default function HomePage() {
     }, 2500);
   };
 
+  const handleNavClick = (path: string) => {
+    router.push(path);
+  }
 
   const handleInviteClick = async () => {
     if (!playerProfile.referralCode) return;
@@ -108,6 +115,13 @@ export default function HomePage() {
       toast({ title: "Sharing failed, link copied instead." });
     }
   };
+  
+  const navOptions = [
+    { label: 'Missions', path: '/quests'},
+    { label: 'Rewards', path: '/battle-pass'},
+    { label: 'Community', path: '/community'},
+    { label: 'Alliance', path: '/alliance-chat'},
+  ]
 
 
   return (
@@ -181,14 +195,13 @@ export default function HomePage() {
                 { id: "change", label: "Change", onClick: toggleCommander },
                 { id: "invite", label: "Invite", onClick: handleInviteClick },
             ]}
+             leftPanel={<HolographicMenu options={navOptions.map(o => o.label)} onSelect={(label) => handleNavClick(navOptions.find(o => o.label === label)!.path)} side="left" />}
+             rightPanel={<ArkForgePanel countdown={timeLeft} />}
+             handLeftX={-0.15}
+             handRightX={1.15}
         />
         
-        <div className="absolute bottom-20 right-4 z-20 pointer-events-auto">
-             <ArkForgePanel countdown={timeLeft} />
-        </div>
       </div>
     </>
   );
 }
-
-    

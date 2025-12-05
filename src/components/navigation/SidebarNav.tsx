@@ -16,10 +16,8 @@ import { Button } from '../ui/button';
 const mainNavItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/upgrades', label: 'Upgrades', icon: ChevronsUp },
-  { href: '/quests', label: 'Missions', icon: ListChecks },
-  { href: '/battle-pass', label: 'Rewards', icon: Swords },
-  { href: '/community', label: 'Community', icon: Users },
-  { href: '/alliance-chat', label: 'Alliance', icon: MessagesSquare },
+  { href: '/quests', label: 'Quests', icon: ListChecks },
+  { href: '/battle-pass', label: 'Pass', icon: Swords },
   { href: '/leaderboard', label: 'Leaders', icon: Trophy },
   { href: '/marketplace', label: 'Shop', icon: ShoppingCart },
   { href: '/arcade', label: 'Arcade', icon: Gamepad2 },
@@ -115,5 +113,3 @@ const SidebarNav: React.FC = () => {
 };
 
 export default SidebarNav;
-
-    

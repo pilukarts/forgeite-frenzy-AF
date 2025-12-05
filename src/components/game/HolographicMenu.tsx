@@ -1,5 +1,6 @@
 import React from "react";
 import HolographicButton from "./HolographicButton";
+import { useRouter } from "next/navigation";
 
 type Props = {
   options: string[];
@@ -11,17 +12,22 @@ type Props = {
 };
 
 const HolographicMenu: React.FC<Props> = ({ options, side = "right", className = "", selected = null, onSelect, alignOffset = 0 }) => {
-  // container transform to keep panel slightly angled toward center
+  const router = useRouter();
+
+  const handleSelect = (option: string) => {
+    if (onSelect) {
+      onSelect(option);
+    }
+  };
+
   const horizontalTransform = side === "left" ? "translate(-50%, -20%)" : "translate(-50%, -20%)";
   return (
     <div
       className={`flex flex-col gap-3 items-${side === "left" ? "end" : "start"} ${className}`}
       style={{
-        // We expect caller to place absolute left/top using CommanderCenter hand anchors; keep alignment internal here.
         transform: undefined,
       }}
     >
-      {/* optional background card for the column (semi translucent) */}
       <div
         aria-hidden
         className="absolute -z-10 rounded-xl"
@@ -40,7 +46,7 @@ const HolographicMenu: React.FC<Props> = ({ options, side = "right", className =
           <HolographicButton
             label={opt}
             active={selected === opt}
-            onClick={() => onSelect?.(opt)}
+            onClick={() => handleSelect(opt)}
             className=""
             ariaLabel={opt}
           />
