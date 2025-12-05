@@ -177,15 +177,15 @@ export default function HomePage() {
             fullBodyUrl={playerProfile.avatarUrl}
             showHalo={true}
             onTap={() => handleTapWithAnimation(false)}
-            rightPanel={<ArkForgePanel countdown={timeLeft} />}
             bottomButtons={[
                 { id: "change", label: "Change", onClick: toggleCommander },
                 { id: "invite", label: "Invite", onClick: handleInviteClick },
             ]}
-            handLeftX={-0.15}
-            handRightX={1.15}
         />
         
+        <div className="absolute bottom-20 right-4 z-20 pointer-events-auto">
+             <ArkForgePanel countdown={timeLeft} />
+        </div>
       </div>
     </>
   );
