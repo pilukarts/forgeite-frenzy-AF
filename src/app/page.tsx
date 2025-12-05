@@ -1,5 +1,4 @@
 
-
 // FIREBASE STUDIO - VIBRANT AND DYNAMIC COMPOSITION
 // Commander centered + ARK right + Harmonically distributed buttons
 // Vibrant environment with holograms that invites to play
