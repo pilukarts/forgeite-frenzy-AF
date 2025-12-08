@@ -1,286 +1,183 @@
+
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, Star, Crown, Sparkles, Zap } from 'lucide-react';
+import { Lock, Star, Crown, Check, Zap } from 'lucide-react';
 import { useGame } from '@/contexts/GameContext';
+import { LEVEL_STAGES } from '@/lib/gameData';
+import { cn } from '@/lib/utils';
+import { Button } from '../ui/button';
 
-interface Level {
+interface LevelNode {
   id: number;
   name: string;
   isCompleted: boolean;
+  isCurrent: boolean;
   isUnlocked: boolean;
-  stars: number;
   bossLevel?: boolean;
 }
 
-interface Stage {
+interface StageNode {
   id: number;
   name: string;
   theme: string;
-  levels: Level[];
+  levels: LevelNode[];
+  isUnlocked: boolean;
+  startLevel: number;
+  endLevel: number;
   backgroundColor: string;
   accentColor: string;
   description: string;
 }
 
-const STAGES: Stage[] = [
-  {
-    id: 1,
-    name: "Earth",
-    theme: "🌍",
-    description: "El hogar de la humanidad. Aprende los fundamentos.",
-    backgroundColor: "from-green-400 via-blue-500 to-blue-600",
-    accentColor: "from-green-300 to-blue-400",
-    levels: Array.from({ length: 10 }, (_, i) => ({
-      id: i + 1,
-      name: `Nivel ${i + 1}`,
-      isCompleted: false,
-      isUnlocked: i === 0,
-      stars: 0,
-      bossLevel: (i + 1) % 10 === 0
-    }))
-  },
-  {
-    id: 2,
-    name: "Moon", 
-    theme: "🌙",
-    description: "La primera frontera. Desafíos lunares te esperan.",
-    backgroundColor: "from-purple-400 via-gray-400 to-slate-500",
-    accentColor: "from-purple-300 to-gray-300",
-    levels: Array.from({ length: 10 }, (_, i) => ({
-      id: 11 + i,
-      name: `Nivel ${11 + i}`,
-      isCompleted: false,
-      isUnlocked: false,
-      stars: 0,
-      bossLevel: (i + 1) % 10 === 0
-    }))
-  },
-  {
-    id: 3,
-    name: "Mars",
-    theme: "🔴",
-    description: "El planeta rojo. Enfrenta tormentas marcianas.",
-    backgroundColor: "from-red-500 via-orange-500 to-red-600",
-    accentColor: "from-red-400 to-orange-400",
-    levels: Array.from({ length: 10 }, (_, i) => ({
-      id: 21 + i,
-      name: `Nivel ${21 + i}`,
-      isCompleted: false,
-      isUnlocked: false,
-      stars: 0,
-      bossLevel: (i + 1) % 10 === 0
-    }))
-  },
-  {
-    id: 4,
-    name: "Asteroid Belt",
-    theme: "☄️",
-    description: "Navega entre asteroides peligrosos.",
-    backgroundColor: "from-yellow-600 via-amber-600 to-orange-600",
-    accentColor: "from-yellow-500 to-amber-500",
-    levels: Array.from({ length: 10 }, (_, i) => ({
-      id: 31 + i,
-      name: `Nivel ${31 + i}`,
-      isCompleted: false,
-      isUnlocked: false,
-      stars: 0,
-      bossLevel: (i + 1) % 10 === 0
-    }))
-  },
-  {
-    id: 5,
-    name: "Deep Space",
-    theme: "🌌",
-    description: "Las profundidades del cosmos.",
-    backgroundColor: "from-indigo-900 via-purple-900 to-black",
-    accentColor: "from-indigo-700 to-purple-700",
-    levels: Array.from({ length: 10 }, (_, i) => ({
-      id: 41 + i,
-      name: `Nivel ${41 + i}`,
-      isCompleted: false,
-      isUnlocked: false,
-      stars: 0,
-      bossLevel: (i + 1) % 10 === 0
-    }))
-  }
-];
-
 const LevelMap: React.FC = () => {
   const { playerProfile } = useGame();
-  const [selectedStage, setSelectedStage] = useState(1);
-  const [selectedLevel, setSelectedLevel] = useState<Level | null>(null);
-
-  const currentStage = STAGES.find(s => s.id === selectedStage) || STAGES[0];
-
-  const getStageUnlocked = (stageId: number): boolean => {
-    if (stageId === 1) return true;
-    return false; // Simplified for now
+  
+  const getStageIdForLevel = (level: number) => {
+    return LEVEL_STAGES.find(stage => level >= stage.startLevel && level <= stage.endLevel)?.name || LEVEL_STAGES[0].name;
   };
 
-  const isLevelUnlocked = (stageId: number, levelIndex: number): boolean => {
-    if (stageId === 1) {
-      return levelIndex === 0; // Only first level unlocked in Earth
+  // Find the stage name corresponding to the player's current level
+  const currentStageName = useMemo(() => playerProfile ? getStageIdForLevel(playerProfile.level) : LEVEL_STAGES[0].name, [playerProfile]);
+  
+  const [selectedStageName, setSelectedStageName] = useState(currentStageName);
+  const [selectedLevel, setSelectedLevel] = useState<LevelNode | null>(null);
+  const currentLevelRef = useRef<HTMLDivElement>(null);
+
+  const stages: StageNode[] = useMemo(() => {
+    if (!playerProfile) return [];
+    
+    const { level: playerLevel } = playerProfile;
+
+    return LEVEL_STAGES.map(stageData => {
+      const isStageUnlocked = playerLevel >= stageData.startLevel;
+
+      const levels: LevelNode[] = Array.from({ length: stageData.endLevel - stageData.startLevel + 1 }, (_, i) => {
+        const levelId = stageData.startLevel + i;
+        return {
+          id: levelId,
+          name: `Level ${levelId}`,
+          isCompleted: playerLevel > levelId,
+          isCurrent: playerLevel === levelId,
+          isUnlocked: playerLevel >= levelId,
+          bossLevel: levelId === stageData.endLevel
+        };
+      });
+
+      return {
+        id: stageData.startLevel,
+        name: stageData.name,
+        theme: "🚀", // Placeholder, can be customized
+        levels,
+        isUnlocked: isStageUnlocked,
+        startLevel: stageData.startLevel,
+        endLevel: stageData.endLevel,
+        backgroundColor: `from-slate-900/80 to-slate-900/50`,
+        accentColor: `from-yellow-400/50 to-yellow-500/50`,
+        description: `Sector ${stageData.name}: Levels ${stageData.startLevel}-${stageData.endLevel}`
+      };
+    });
+  }, [playerProfile]);
+
+  useEffect(() => {
+    if(currentLevelRef.current) {
+        currentLevelRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-    return false;
-  };
+  }, [selectedStageName]);
 
-  const handleLevelClick = (level: Level, stageId: number) => {
-    if (!isLevelUnlocked(stageId, level.id - currentStage.levels[0].id)) {
-      return;
-    }
-    setSelectedLevel(level);
-  };
 
-  const renderStar = (starIndex: number, totalStars: number) => (
-    <Star 
-      key={starIndex}
-      className={`w-3 h-3 ${
-        starIndex < totalStars 
-          ? 'text-yellow-400 fill-yellow-400' 
-          : 'text-gray-600'
-      }`}
-    />
-  );
+  if (!playerProfile) return null;
 
+  const currentStage = stages.find(s => s.name === selectedStageName) || stages[0];
+  
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+    <div className="h-full w-full p-2 sm:p-4 text-white overflow-y-auto">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
-            Mapa de Niveles
+        <div className="text-center mb-4">
+          <h1 className="text-2xl sm:text-4xl font-headline text-primary mb-1">
+            Starmap
           </h1>
-          <p className="text-gray-300">
-            Explora las regiones del cosmos
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Your journey through the Alliance territories.
           </p>
         </div>
 
         {/* Stage Navigation */}
-        <div className="flex justify-center mb-8 overflow-x-auto pb-4">
-          <div className="flex space-x-4 min-w-max px-4">
-            {STAGES.map((stage) => {
-              const isUnlocked = getStageUnlocked(stage.id);
-              const isSelected = selectedStage === stage.id;
-              
+        <div className="flex justify-center mb-6 overflow-x-auto pb-2">
+          <div className="flex space-x-2 sm:space-x-4 min-w-max px-4">
+            {stages.map((stage) => {
+              const isSelected = selectedStageName === stage.name;
               return (
                 <motion.button
                   key={stage.id}
-                  onClick={() => isUnlocked && setSelectedStage(stage.id)}
-                  disabled={!isUnlocked}
-                  className={`
-                    relative p-4 rounded-xl border-2 transition-all duration-300 min-w-[160px]
-                    ${isSelected 
-                      ? 'border-yellow-400 bg-gradient-to-br ' + stage.backgroundColor 
-                      : isUnlocked 
-                        ? 'border-gray-600 bg-gray-800/50 hover:border-gray-400' 
-                        : 'border-gray-700 bg-gray-900/50 cursor-not-allowed opacity-50'
-                    }
-                  `}
-                  whileHover={isUnlocked ? { scale: 1.05 } : {}}
-                  whileTap={isUnlocked ? { scale: 0.95 } : {}}
+                  onClick={() => stage.isUnlocked && setSelectedStageName(stage.name)}
+                  disabled={!stage.isUnlocked}
+                  className={cn(
+                    "relative p-2 sm:p-4 rounded-xl border-2 transition-all duration-300 min-w-[120px] sm:min-w-[160px]",
+                    isSelected 
+                      ? 'border-primary bg-primary/20' 
+                      : stage.isUnlocked 
+                        ? 'border-border bg-card/50 hover:border-primary/50' 
+                        : 'border-border/50 bg-card/30 cursor-not-allowed opacity-60'
+                  )}
+                  whileHover={stage.isUnlocked ? { y: -5 } : {}}
+                  whileTap={stage.isUnlocked ? { scale: 0.95 } : {}}
                 >
-                  {!isUnlocked && (
-                    <Lock className="absolute top-2 right-2 w-5 h-5 text-gray-500" />
+                  {!stage.isUnlocked && (
+                    <Lock className="absolute top-1 right-1 w-4 h-4 text-muted-foreground" />
                   )}
-                  
-                  <div className="text-3xl mb-2">{stage.theme}</div>
-                  <div className="text-white font-bold text-sm">{stage.name}</div>
-                  <div className="text-gray-300 text-xs mt-1">
-                    Niveles {stage.levels[0].id}-{stage.levels[stage.levels.length - 1].id}
+                  <div className="text-base sm:text-xl font-bold">{stage.name}</div>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    Levels {stage.startLevel}-{stage.endLevel}
                   </div>
-                  
-                  {isSelected && (
-                    <motion.div
-                      className="absolute inset-0 border-2 border-yellow-400 rounded-xl"
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  )}
                 </motion.button>
               );
             })}
           </div>
         </div>
 
-        {/* Stage Description */}
-        <div className="text-center mb-8">
-          <motion.div
-            key={selectedStage}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-gray-600 rounded-xl p-6 max-w-2xl mx-auto"
-          >
-            <h2 className="text-2xl font-bold text-white mb-2 flex items-center justify-center">
-              <span className="text-3xl mr-3">{currentStage.theme}</span>
-              {currentStage.name}
-            </h2>
-            <p className="text-gray-300">{currentStage.description}</p>
-          </motion.div>
-        </div>
-
         {/* Level Grid */}
-        <div className="bg-gradient-to-br from-slate-800/30 to-slate-900/50 rounded-2xl p-6 border border-gray-600">
-          <div className="grid grid-cols-5 gap-4">
-            {currentStage.levels.map((level, index) => {
-              const isUnlocked = isLevelUnlocked(selectedStage, index);
-              const isSelected = selectedLevel?.id === level.id;
-              
+        <div className="bg-card/30 rounded-2xl p-4 sm:p-6 border border-border/50">
+          <div className="grid grid-cols-5 md:grid-cols-10 gap-2 sm:gap-4">
+            {currentStage.levels.map((level) => {
               return (
                 <motion.div
+                  ref={level.isCurrent ? currentLevelRef : null}
                   key={level.id}
-                  onClick={() => handleLevelClick(level, selectedStage)}
-                  className={`
-                    relative aspect-square rounded-lg border-2 cursor-pointer transition-all duration-300
-                    ${level.bossLevel ? 'border-red-400' : 'border-gray-600'}
-                    ${isSelected 
-                      ? 'bg-gradient-to-br ' + currentStage.accentColor + ' border-yellow-400' 
-                      : isUnlocked 
-                        ? 'bg-slate-700/50 hover:bg-slate-600/50 border-gray-500' 
-                        : 'bg-gray-900/50 border-gray-700 cursor-not-allowed opacity-50'
-                    }
-                  `}
-                  whileHover={isUnlocked ? { scale: 1.05 } : {}}
-                  whileTap={isUnlocked ? { scale: 0.95 } : {}}
+                  onClick={() => level.isUnlocked && setSelectedLevel(level)}
+                  className={cn(
+                    "relative aspect-square rounded-lg border-2 flex items-center justify-center transition-all duration-300",
+                    level.isCurrent ? "bg-primary/30 border-primary ring-2 ring-primary/50 animate-pulse cursor-pointer" :
+                    level.isCompleted ? "bg-green-500/30 border-green-500 cursor-pointer" :
+                    level.isUnlocked ? "bg-card/50 border-border hover:bg-card/70 cursor-pointer" :
+                    "bg-background/50 border-border/50 cursor-not-allowed opacity-50"
+                  )}
+                  whileHover={level.isUnlocked ? { scale: 1.1 } : {}}
+                  whileTap={level.isUnlocked ? { scale: 0.95 } : {}}
                   layout
                 >
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className={`font-bold text-sm ${
-                      isUnlocked ? 'text-white' : 'text-gray-500'
-                    }`}>
-                      {level.id}
-                    </span>
-                  </div>
+                  <span className="font-bold text-sm sm:text-base">
+                    {level.id}
+                  </span>
 
                   {level.bossLevel && (
-                    <div className="absolute top-1 right-1">
-                      <Crown className="w-3 h-3 text-red-400" />
+                    <div className="absolute -top-1.5 -right-1.5 text-red-400">
+                      <Crown className="w-3 h-3 sm:w-4 sm:h-4" />
                     </div>
                   )}
 
-                  {level.isCompleted && (
-                    <div className="absolute -top-1 -right-1 flex space-x-0">
-                      {[0, 1, 2].map(starIndex => 
-                        renderStar(starIndex, level.stars)
-                      )}
+                   {level.isCompleted && !level.isCurrent && (
+                     <div className="absolute inset-0 flex items-center justify-center">
+                      <Check className="w-4 h-4 sm:w-6 sm:h-6 text-green-400" />
                     </div>
                   )}
 
-                  {!isUnlocked && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Lock className="w-4 h-4 text-gray-500" />
+                  {!level.isUnlocked && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-md">
+                      <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
                     </div>
-                  )}
-
-                  {isSelected && (
-                    <motion.div
-                      className="absolute inset-0 border-2 border-yellow-400 rounded-lg"
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                    />
                   )}
                 </motion.div>
               );
@@ -299,50 +196,43 @@ const LevelMap: React.FC = () => {
               onClick={() => setSelectedLevel(null)}
             >
               <motion.div
-                className="bg-gradient-to-br from-slate-800 to-slate-900 border border-gray-600 rounded-2xl p-6 max-w-md w-full"
+                className="bg-background border-2 border-primary/50 rounded-2xl p-6 max-w-sm w-full shadow-2xl"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.8, opacity: 0 }}
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold text-white mb-2">
+                  <h3 className="text-2xl font-headline text-primary mb-2">
                     {selectedLevel.name}
                   </h3>
                   {selectedLevel.bossLevel && (
                     <div className="flex items-center justify-center space-x-2 text-red-400">
                       <Crown className="w-5 h-5" />
-                      <span className="font-bold">Nivel Jefe</span>
-                      <Crown className="w-5 h-5" />
+                      <span className="font-bold">Boss Encounter</span>
                     </div>
                   )}
                 </div>
-
-                <div className="space-y-4">
-                  {selectedLevel.isCompleted && (
-                    <div>
-                      <h4 className="text-white font-bold mb-2">Estrellas Obtenidas:</h4>
-                      <div className="flex space-x-2">
-                        {[0, 1, 2].map(starIndex => 
-                          renderStar(starIndex, selectedLevel.stars)
-                        )}
-                      </div>
-                    </div>
-                  )}
+                
+                <div className="space-y-2 text-center text-muted-foreground">
+                    {selectedLevel.isCompleted ? (
+                        <p className="flex items-center justify-center gap-2 text-green-400"><Check className="h-5 w-5"/> Mission Complete</p>
+                    ) : selectedLevel.isCurrent ? (
+                        <p className="flex items-center justify-center gap-2 text-yellow-400"><Zap className="h-5 w-5"/> Current Objective</p>
+                    ) : (
+                         <p className="flex items-center justify-center gap-2"><Lock className="h-5 w-5"/> Locked</p>
+                    )}
+                     <p>Status: {selectedLevel.isCompleted ? 'Completed' : selectedLevel.isCurrent ? 'In Progress' : 'Locked'}</p>
                 </div>
 
-                <div className="flex space-x-4 mt-6">
-                  <button
+                <div className="mt-6">
+                  <Button
                     onClick={() => setSelectedLevel(null)}
-                    className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                    className="w-full"
+                    variant="outline"
                   >
-                    Cerrar
-                  </button>
-                  {selectedLevel.isUnlocked && (
-                    <button className="flex-1 px-4 py-2 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-500 hover:to-blue-500 text-white rounded-lg transition-all">
-                      Jugar
-                    </button>
-                  )}
+                    Close Transmission
+                  </Button>
                 </div>
               </motion.div>
             </motion.div>
