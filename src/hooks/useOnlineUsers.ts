@@ -1,7 +1,12 @@
+
 // hooks/useOnlineUsers.ts
 import { useEffect, useState } from 'react';
-import { database } from '../lib/firebase'; 
-import { ref, onValue, set, onDisconnect, serverTimestamp } from 'firebase/database';
+import { getDatabase, ref, onValue, set, onDisconnect, serverTimestamp } from 'firebase/database';
+import { getApps, initializeApp, getApp } from 'firebase/app';
+import { firebaseConfig } from '@/lib/firebaseConfig';
+
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const database = getDatabase(app);
 
 export function useOnlineUsers() {
   const [onlineCount, setOnlineCount] = useState(0);

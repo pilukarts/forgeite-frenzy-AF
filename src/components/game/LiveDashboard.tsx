@@ -15,6 +15,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { useGame } from '@/contexts/GameContext';
+import { useOnlineUsers } from '@/hooks/useOnlineUsers';
 
 interface LiveStats {
   onlineUsers: number;
@@ -28,10 +29,11 @@ interface LiveStats {
 
 const LiveDashboard: React.FC = () => {
   const { playerProfile, isInitialSetupDone } = useGame();
+  const { onlineCount } = useOnlineUsers();
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [liveStats, setLiveStats] = useState<LiveStats>({
-    onlineUsers: 1247,
+    onlineUsers: onlineCount,
     totalVisits: 985432,
     totalTaps: playerProfile?.totalTaps || 0,
     arksBuilt: 56289,
@@ -41,11 +43,15 @@ const LiveDashboard: React.FC = () => {
   });
   const [lastUpdate, setLastUpdate] = useState(new Date());
 
+  useEffect(() => {
+    setLiveStats(prev => ({ ...prev, onlineUsers: onlineCount }));
+  }, [onlineCount]);
+
   // Actualizar estadísticas cada 30 segundos
   useEffect(() => {
     const interval = setInterval(() => {
       setLiveStats(prev => ({
-        onlineUsers: Math.max(1000, prev.onlineUsers + Math.floor(Math.random() * 20) - 10),
+        ...prev,
         totalVisits: prev.totalVisits + Math.floor(Math.random() * 15) + 5,
         totalTaps: prev.totalTaps + Math.floor(Math.random() * 50) + 10,
         arksBuilt: prev.arksBuilt + Math.floor(Math.random() * 8) + 2,
@@ -339,5 +345,3 @@ const LiveDashboard: React.FC = () => {
 };
 
 export default LiveDashboard;
-
-    
