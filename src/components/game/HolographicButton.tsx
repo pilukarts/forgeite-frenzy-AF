@@ -15,7 +15,7 @@ const HolographicButton: React.FC<Props> = ({ label, onClick, active = false, cl
       aria-label={ariaLabel ?? label}
       onClick={onClick}
       className={
-        `w-40 md:w-48 px-3 py-2 rounded-lg text-sm font-semibold text-white/95 transition-transform transform 
+        `w-40 md:w-48 px-3 py-2 rounded-lg text-base font-semibold text-white/95 transition-transform transform 
          hover:scale-105 focus:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50
          bg-gradient-to-b from-white/5 via-white/3 to-transparent backdrop-blur-md
          border border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.45)] ${active ? "ring-2 ring-yellow-300/40" : ""} ${className}`
