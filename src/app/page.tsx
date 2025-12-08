@@ -196,8 +196,8 @@ export default function HomePage() {
             ]}
              leftPanel={<HolographicMenu options={navOptions.map(o => o.label)} onSelect={(label) => handleNavClick(navOptions.find(o => o.label === label)!.path)} side="left" />}
              rightPanel={<ArkForgePanel countdown={timeLeft} />}
-             handLeftX={-0.15}
-             handRightX={1.15}
+             handLeftX={-0.25}
+             handRightX={1.25}
         />
         
       </div>
