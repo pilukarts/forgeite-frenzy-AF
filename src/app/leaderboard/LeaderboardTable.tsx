@@ -1,7 +1,7 @@
 
 "use client";
 import React, { useEffect, useState } from 'react';
-import type { LeaderboardEntry } from '@/lib/types';
+import type { LeaderboardEntry, PlayerProfile } from '@/lib/types';
 import { useGame } from '@/contexts/GameContext';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,17 +17,18 @@ import { UserCircle } from 'lucide-react';
 import { countries } from '@/lib/countries';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import images from '@/lib/placeholder-images.json';
+import { getFirestore, collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
+import { getApps, initializeApp, getApp } from 'firebase/app';
+import { firebaseConfig } from '@/lib/firebaseConfig';
 
-interface LeaderboardTableProps {
-    initialLeaderboardData: LeaderboardEntry[];
-}
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const db = getFirestore(app);
 
 const LastSeen: React.FC<{ lastSeen: Date | null | undefined }> = ({ lastSeen }) => {
     if (!lastSeen) {
         return null;
     }
     
-    // Ensure lastSeen is a Date object
     const lastSeenDate = typeof lastSeen === 'string' ? parseISO(lastSeen) : lastSeen;
     
     const now = new Date();
@@ -54,9 +55,53 @@ const LastSeen: React.FC<{ lastSeen: Date | null | undefined }> = ({ lastSeen })
 };
 
 
-const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ initialLeaderboardData }) => {
+const LeaderboardTable: React.FC = () => {
   const { playerProfile, isLoading: isGameLoading, isInitialSetupDone } = useGame();
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
+  const [isLeaderboardLoading, setIsLeaderboardLoading] = useState(true);
   
+  useEffect(() => {
+    const playersRef = collection(db, 'players');
+    const q = query(playersRef, orderBy('points', 'desc'), limit(50));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const leaderboard: LeaderboardEntry[] = [];
+        let rank = 1;
+        querySnapshot.forEach((doc) => {
+            const playerData = doc.data() as PlayerProfile;
+            
+            let lastLogin: Date | null = null;
+            if (playerData.lastLoginTimestamp) {
+                const parsedDate = typeof playerData.lastLoginTimestamp === 'string' 
+                    ? parseISO(playerData.lastLoginTimestamp)
+                    : new Date(playerData.lastLoginTimestamp);
+                
+                if (!isNaN(parsedDate.getTime())) {
+                    lastLogin = parsedDate;
+                }
+            }
+
+            leaderboard.push({
+                rank: rank++,
+                playerId: doc.id,
+                playerName: playerData.name,
+                score: playerData.points,
+                playerLeague: playerData.league,
+                country: playerData.country,
+                avatarUrl: playerData.avatarUrl,
+                lastSeen: lastLogin
+            });
+        });
+        setLeaderboardData(leaderboard);
+        setIsLeaderboardLoading(false);
+    }, (error) => {
+        console.error("Error fetching live leaderboard: ", error);
+        setIsLeaderboardLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   if (isGameLoading) {
      return <IntroScreen />;
   }
@@ -88,10 +133,17 @@ const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ initialLeaderboardD
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {data.length > 0 ? (
+                {isLeaderboardLoading ? (
+                    <TableRow>
+                        <TableCell colSpan={3} className="text-center py-8">
+                            <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+                            <p className="text-muted-foreground mt-2">Loading Live Rankings...</p>
+                        </TableCell>
+                    </TableRow>
+                ) : data.length > 0 ? (
                     data.map((entry) => {
                         const { Icon: LeagueIcon, colorClass: leagueColorClass } = getLeagueIconAndColor(entry.playerLeague);
-                        const flagSrc = `https://flags.fmcdn.net/data/flags/w580/${entry.country?.toLowerCase()}.png`;
+                        const flagSrc = entry.country ? `https://flags.fmcdn.net/data/flags/w580/${entry.country.toLowerCase()}.png` : '';
                         const avatarSrc = entry.avatarUrl || images.generic.default_avatar;
                         const dataAiHint = "commander portrait";
 
@@ -154,7 +206,7 @@ const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ initialLeaderboardD
           <TabsTrigger value="global" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-base">Global Rankings</TabsTrigger> 
         </TabsList>
         <TabsContent value="global">
-          {renderLeaderboardTable(initialLeaderboardData, "Global Top Commanders", <Globe className="h-5 w-5 sm:h-6 sm:w-6" />)}
+          {renderLeaderboardTable(leaderboardData, "Global Top Commanders", <Globe className="h-5 w-5 sm:h-6 sm:w-6" />)}
         </TabsContent>
       </Tabs>
     </div>
