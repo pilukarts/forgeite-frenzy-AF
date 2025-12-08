@@ -1,6 +1,5 @@
 import React from "react";
 import HolographicButton from "./HolographicButton";
-import { useRouter } from "next/navigation";
 
 type Props = {
   options: string[];
@@ -12,8 +11,6 @@ type Props = {
 };
 
 const HolographicMenu: React.FC<Props> = ({ options, side = "right", className = "", selected = null, onSelect, alignOffset = 0 }) => {
-  const router = useRouter();
-
   const handleSelect = (option: string) => {
     if (onSelect) {
       onSelect(option);
