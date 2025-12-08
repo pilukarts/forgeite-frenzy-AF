@@ -195,6 +195,18 @@ export default function HomePage() {
             }}
         />
 
+        {/* Left Connector */}
+        <div
+            aria-hidden
+            className="absolute top-1/2 left-[calc(50%-170px)] -translate-y-1/2 w-[15vw] max-w-[150px] h-0.5 bg-gradient-to-l from-white/20 via-white/50 to-transparent"
+        />
+
+        {/* Right Connector */}
+        <div
+            aria-hidden
+            className="absolute top-1/2 right-[calc(50%-170px)] -translate-y-1/2 w-[15vw] max-w-[150px] h-0.5 bg-gradient-to-r from-white/20 via-white/50 to-transparent"
+        />
+
         <CommanderCenter
             fullBodyUrl={playerProfile.avatarUrl}
             showHalo={true}
