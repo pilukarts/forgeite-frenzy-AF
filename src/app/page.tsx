@@ -1,4 +1,5 @@
 
+
 // FIREBASE STUDIO - VIBRANT AND DYNAMIC COMPOSITION
 // Commander centered + ARK right + Harmonically distributed buttons
 // Vibrant environment with holograms that invites to play
@@ -185,6 +186,14 @@ export default function HomePage() {
             />
           ))}
         </div>
+        
+        <div 
+            aria-hidden 
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[400px] md:h-[400px] rounded-full border-2 border-white/20"
+            style={{
+                boxShadow: '0 0 15px rgba(255, 255, 255, 0.1), 0 0 30px rgba(255, 255, 255, 0.05)',
+            }}
+        />
 
         <CommanderCenter
             fullBodyUrl={playerProfile.avatarUrl}
