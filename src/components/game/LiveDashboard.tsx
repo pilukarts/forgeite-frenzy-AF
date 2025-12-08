@@ -26,7 +26,7 @@ interface LiveStats {
   revenue: number;
 }
 
-export const LiveDashboard: React.FC = () => {
+const LiveDashboard: React.FC = () => {
   const { playerProfile, isInitialSetupDone } = useGame();
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -337,5 +337,7 @@ export const LiveDashboard: React.FC = () => {
     </>
   );
 };
+
+export default LiveDashboard;
 
     
