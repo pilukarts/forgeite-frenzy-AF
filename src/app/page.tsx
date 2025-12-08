@@ -198,13 +198,13 @@ export default function HomePage() {
         {/* Left Connector */}
         <div
             aria-hidden
-            className="absolute top-1/2 left-[calc(50%-170px)] -translate-y-1/2 w-[15vw] max-w-[150px] h-0.5 bg-gradient-to-l from-white/20 via-white/50 to-transparent"
+            className="absolute top-1/2 left-[calc(50%-220px)] -translate-y-1/2 w-[18vw] max-w-[200px] h-0.5 bg-gradient-to-l from-white/20 via-white/50 to-transparent"
         />
 
         {/* Right Connector */}
         <div
             aria-hidden
-            className="absolute top-1/2 right-[calc(50%-170px)] -translate-y-1/2 w-[15vw] max-w-[150px] h-0.5 bg-gradient-to-r from-white/20 via-white/50 to-transparent"
+            className="absolute top-1/2 right-[calc(50%-220px)] -translate-y-1/2 w-[18vw] max-w-[200px] h-0.5 bg-gradient-to-r from-white/20 via-white/50 to-transparent"
         />
 
         <CommanderCenter
@@ -217,8 +217,8 @@ export default function HomePage() {
             ]}
              leftPanel={<HolographicMenu options={navOptions.map(o => o.label)} onSelect={(label) => handleNavClick(navOptions.find(o => o.label === label)!.path)} side="left" />}
              rightPanel={<ArkForgePanel countdown={timeLeft} />}
-             handLeftX={-0.25}
-             handRightX={1.25}
+             handLeftX={-0.4}
+             handRightX={1.4}
         />
         
       </div>
