@@ -13,8 +13,6 @@ const ArkForgePanel: React.FC<Props> = ({ countdown = "03:12:45", className = ""
   const [src, setSrc] = useState<string | undefined>(initialSrc);
 
   const handleError = () => {
-    // If the primary image fails, we can try a more generic fallback or just show nothing.
-    // For now, let's just clear the src to hide the broken image icon.
     setSrc(undefined); 
   }
 
